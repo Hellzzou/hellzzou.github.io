@@ -56,30 +56,26 @@ function displayPoint(){
 	}
 }
 async function loadIFRPointsBeginingByInSelect(requestedName){
-	const ifrPoints = await postFetchRequest('http://localhost:3000/api/IFRpoints/beginningBy', {"name":requestedName});
+	const points = ( $('#pointType').val() == 'point de CTL' ) ? await postFetchRequest('http://localhost:3000/api/CTLPoints/beginningBy', {"name":requestedName}) : await postFetchRequest('http://localhost:3000/api/IFRpoints/beginningBy', {"name":requestedName});
 	document.getElementById('ifrpoints').length = 1;
-	for ( let i = 0 ; i < ifrPoints.length ; i++ ) $('#ifrpoints').append(new Option(ifrPoints[i].WPT_IDENT, ifrPoints[i].WPT_IDENT));
+	if ( $('#pointType').val() == 'point de CTL' ) for ( let i = 0 ; i < points.length ; i++ ) $('#ifrpoints').append(new Option(points[i].name, points[i].name));
+	else for ( let i = 0 ; i < points.length ; i++ ) $('#ifrpoints').append(new Option(points[i].WPT_IDENT, points[i].WPT_IDENT));
 }
 async function DisplayIfrPointInformations(ifrPointName){
-	const ifrPoint = await postFetchRequest('http://localhost:3000/api/IFRpoint', {"name":ifrPointName});
-	const point = Point.createInDegrees(ifrPoint[0].WPT_IDENT, ifrPoint[0].WGS_DLAT, ifrPoint[0].WGS_DLONG, '');
+	let points;
+	let point;
+	if ( $('#pointType').val() == 'point de CTL' ){
+		points = await postFetchRequest('http://localhost:3000/api/CTLpoints', {"name":ifrPointName});
+		point = Point.createInString(points[0].name, points[0].latitudeInString, points[0].longitudeInString, points[0].altitude);
+	}
+	else{
+		points = await postFetchRequest('http://localhost:3000/api/IFRpoint', {"name":ifrPointName});
+		point = Point.createInDegrees(points[0].WPT_IDENT, points[0].WGS_DLAT, points[0].WGS_DLONG, '');
+	}
 	$('#pointName').val(point.name);
-	$('#pointAlti').val('');
+	$('#pointAlti').val(point.altitude);
 	$('#northSouthcoordinate').val(point.latitudeInString);
 	$('#eastWestcoordinate').val(point.longitudeInString);
-}
-function updatePointFieldset(pointType){
-	$('#pointDatas input').val('');
-	switch(pointType){
-		case 'point IFR' :
-			$('#pointBeginingPara').removeClass('d-none');
-			$('#ifrpointsPara').removeClass('d-none');
-			break;
-		case 'point de CTL' :
-			$('#pointBeginingPara').addClass('d-none');
-			$('#ifrpointsPara').addClass('d-none');
-			break;						
-	}
 }
 async function saveTransitInDb(){
 	let transit = new Transit($('#savedTransitName').val().toUpperCase(),[]);
@@ -316,6 +312,11 @@ function saveNewPoint(name, altitude, latitude, longitude){
 	$('#newPointLongitude').on('keyup', function(){checkinput($('#newPointLongitude'), $('#newPointLongitudeSmall'), $('#newPointLongitudeImg'), 'Format : WXXX XX.XX', '#createNewPointModal small', '#saveNewPointModal');});
 	$('#saveNewPointModal').on('click', savePointinDb);
 }
+function resetForm(){
+	$('#pointBegining').val('');
+	document.getElementById('ifrpoints').options.length = 1;
+	$('#pointDatas input').val('');
+}
 (function (){
 	$('#createPointButton').on("click", displayPoint);
 	$('#razPointButton').on("click", function(){$('#pointDatas input').val('');});
@@ -330,8 +331,8 @@ function saveNewPoint(name, altitude, latitude, longitude){
 	$('input[name=searchType]').on("change",function(){if ( $('#departureSearch').val().length >= 2) loadAirfieldsSelect($('input[name=searchType]:checked'), $('#departureSearch').val(), document.getElementById('departureAirfieldChoice'));});
 	$('input[name=searchType2]').on("change",function(){if ( $('#arrivalSearch').val().length >= 2) loadAirfieldsSelect($('input[name=searchType2]:checked'), $('#arrivalSearch').val(), document.getElementById('arrivalAirfieldChoice'));});
 	$('#ifrpoints').on("change",function(){DisplayIfrPointInformations($('#ifrpoints').val())});
-	$('#pointType').on("change", function(){updatePointFieldset(this.value)});
 	$('#saveNewAirfield').on('click', saveNewAifield);
+	$('#pointType').on('change', resetForm);
 	$('#saveNewPoint').on('click', function(){saveNewPoint('','','','')});
 	$('tbody').sortable({
 		axis : "y",
