@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<title>Calculs d'altimétrie</title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+	</head>
+	<body class="container-fluid bg-secondary text-light">
+		<header class="row">
+			<div class="container">
+				<div class="row mb-3">
+					<img src="images/23f.png" width="80" height="100" alt="" class="col">
+					<h2 class="text-center text-uppercase col-10 align-self-center">toute la panoplie nécessaire aux navs du désert</h2>
+					<img src="images/21f.png" width="80" height="100" alt="" class="col">
+				</div>
+				<div class="row m-1">
+					<div class="container">
+						<div id="menu" class="row bg-dark form-group m-0 rounded">
+							<button class="col-md-3 btn btn-lg btn-dark" data-link="altimeter">altimétrie</button>
+							<button class="col-md-3 btn btn-lg btn-dark" data-link="converter">convertisseur</button>
+								<div class="col-md-3 rounded btn-group">
+									<div class="container">
+										<div class="row">
+											<button type="button" class="btn btn-lg btn-dark rounded col-md-10" data-link="ctl">transit</button>
+											<button id="dropdownMenu" type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split rounded disabled col-md-2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												<span class="visually-hidden"></span>
+											</button>
+											<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenu">
+												<button id="saveTransit" class="dropdown-item" type="button">Sauvegarder un transit</button>
+												<button id="loadTransit" class="dropdown-item" type="button">Charger un transit</button>
+												<button id="changeAirfields" class="dropdown-item" type="button">Changer les aéroports</button>
+												<button id="calculatePLE" class="dropdown-item" type="button">Calculer la PLE</button>
+												<button id="saveNewPoint" class="dropdown-item" type="button">Sauvegarder un point</button>
+												<button id="saveNewAirfield" class="dropdown-item" type="button">sauvegarder un terrain</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							<button class="col-md-3 btn btn-lg btn-dark" data-link="shot">distance de tir</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+		<div class="row justify-content-center">
+			<div id="savedAlert" class="col-md-11 alert alert-success alert-dismissible fade position-absolute mx-3" role="alert">
+				<h5 class="text-center">sauvegarde effectuée avec succès</h5>
+			</div>
+		</div>
+		<section id="altimeter" class="row">
+			<form action="#" id="providedDatasForm" name="providedDatasForm" class="col-12 col-lg-6">
+				<fieldset class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+					<legend class="text-center mb-4 fw-bold">Données environnementales et tactiques</legend>
+					<div class="form-group row m-1">
+						<label for="qnh" class="col-md-8 col-form-label fw-bold">QNH : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-center text-light" type="number" id="qnh" min="970" max="1030" data-type="number" data-placeholder="QNH !" autofocus>
+							<small class="form-text text-warning">entre 970 et 1030</small>
+						</div>
+					</div>
+					<div class="form-group row m-1">
+						<label for="fl" class="col-md-8 col-form-label fw-bold">Niveau de vol : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-center text-light" type="number" id="fl" step="5" min="0" max="300" data-type="number" data-placeholder="FL !">
+							<small class="form-text text-warning">entre 0 et 300</small>
+						</div>
+					</div>
+					<div class="form-group row m-1">
+						<label for="tv" class="col-md-8 col-form-label fw-bold">Température vraie : ( en °C )</label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="number" id="tv" step="0.1" min="-40" max="50" data-type="number" data-placeholder="TV !">
+							<small class="form-text text-warning">entre -40 et 50</small>
+						</div>
+					</div>
+					<div class="form-group row m-1">
+						<label for="altiTerrain" class="col-md-8 col-form-label fw-bold">Altitude terrain : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="number" id="altiTerrain" min="0" max="30000" data-type="number" data-placeholder="Alti terrain !">
+							<small class="form-text text-warning">entre 0 et 30 000</small>
+						</div>
+					</div>
+					<div class="form-group row m-1">
+						<label for="altiTopoMax" class="col-md-8 col-form-label fw-bold">Altitude Topo Max : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="number" id="altiTopoMax" min="0" max="30000" data-type="number" data-placeholder="Alti Topo Max !">
+							<small class="form-text text-warning">entre 0 et 30 000</small>
+						</div>
+					</div>
+					<div class="form-group row m-1">
+						<label for="volsa" class="col-md-8 col-form-label fw-bold">Volume système d'armes : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="number" id="volsa" step="100" min="0" max="30000" data-type="number" data-placeholder="Volume SA !">
+							<small class="form-text text-warning">entre 0 et 30 000</small>
+						</div>
+					</div>
+				</fieldset>
+				<div class="form-group row mt-3">
+					<div class="col-md-1"></div>
+					<button id="calculateDatasButton" class="shadow-lg btn btn-primary col-md-4" type="button">Calculer</button>
+					<div class="col-md-2"></div>
+					<button id="razDatasButton" class="shadow-lg btn btn-danger col-md-4" type="button">Effacer</button>
+					<div class="col-md-1"></div>
+				</div>
+			</form>
+			<form action="#" id="calculatedDatasForm" name="calculatedDatasForm" class="col-12 col-lg-6">
+				<fieldset class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+				<legend class="text-center mb-4 fw-bold">Données calculées</legend>
+					<div class="form-group row m-2">
+						<label for="isa" class="col-md-8 col-form-label fw-bold">∆ ISA : ( en °C )</label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="isa" id="isa" value="" placeholder="" readonly='readonly'>
+							<small class="form-text text-warning"><span class="text-warning">Atmosphère : </span><span id="atmos" class="text-warning"></span></small>
+						</div>
+					</div>
+					<div class="form-group row m-2">
+						<label for="DeltaTempPieds" class="col-md-8 col-form-label fw-bold">∆ température : ( en ft )</label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="DeltaTempPieds" id="DeltaTempPieds" value="" placeholder="" readonly='readonly'>
+						</div>
+					</div>
+					<div class="form-group row m-2">
+						<label for="DeltaTempHpa" class="col-md-8 col-form-label fw-bold">∆ température : ( en Hpa )</label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="DeltaTempHpa" id="DeltaTempHpa" value="" placeholder="" readonly='readonly'>
+						</div>
+					</div>
+					<div class="form-group row m-2">
+						<label for="qfe" class="col-md-8 col-form-label fw-bold">QFE : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="qfe" id="qfe" value="" placeholder="" readonly='readonly'>
+						</div class="col-md-4">
+					</div>
+					<div class="form-group row m-2">
+						<label for="qfec" class="col-md-8 col-form-label fw-bold">QFE corrigé : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="qfec" id="qfec" value="" placeholder="" readonly='readonly'>
+						</div>
+					</div>
+					<div class="form-group row m-2">
+						<label for="hi" class="col-md-8 col-form-label fw-bold">Hauteur indiquée : ( en ft )</label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="hi" id="hi" value="" placeholder="" readonly='readonly'>
+						</div>
+					</div>
+					<div class="form-group row m-2">
+						<label for="hv" class="col-md-8 col-form-label fw-bold">Hauteur vraie : ( en ft )</label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="hv" id="hv" value="" placeholder="" readonly='readonly'>
+						</div>
+					</div>
+					<div class="form-group row m-2">
+						<label for="flMini" class="col-md-8 col-form-label fw-bold">FL mini : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="flMini" id="flMini" value="" placeholder="" readonly='readonly'>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</section>
+		<section id="ctl" class="row d-none">
+			<form action="#" id="airfields" name="airfields" class="col-12 col-lg-4">
+				<h4 class="text-center text-dark">Aéroports de départ et d'arrivée</h4>
+				<fieldset class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+					<legend class="text-center fw-bold">Aéroport de départ</legend>
+					<div class="justify-content-end row">
+						<label class="col-md-7 col-form-label fw-bold">Rechercher par : </label>
+						<div class="btn-group btn-group-toggle col-md-5" data-toggle="buttons">
+							<label class="btn btn-dark">
+								<input id="option1" class="" type="radio" name="searchType" value="NAME" autocomplete="off" checked>NOM
+							</label>
+							<label class="btn btn-dark">
+								<input id="option2" type="radio" name="searchType" autocomplete="off" value="ICAO">OACI
+							</label>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row">
+						<label class="col-md-7 col-form-label fw-bold" for="departureSearch">Recherche :</label>
+						<div class="col-md-5">
+							<input class="form-control bg-dark text-light text-center" type="text" name="departureSearch" id="departureSearch">
+							<small class="form-text text-warning">minimum 2 caractères</small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-7 col-form-label fw-bold" for="departureAirfieldChoice">aéroport de départ</label>
+						<div class="col-md-5">
+							<select id="departureAirfieldChoice" class="form-select bg-dark text-light text-center">
+								<option>Choix</option>
+							</select>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+					<legend class="text-center fw-bold">Aéroport d'arrivée</legend>
+					<div class="justify-content-end row">
+						<label class="col-md-7 col-form-label fw-bold">Rechercher par : </label>
+						<div class="btn-group btn-group-toggle col-md-5" data-toggle="buttons">
+							<label class="btn btn-dark">
+								<input id="option1" type="radio" name="searchType2" value="NAME" autocomplete="off" checked>NOM
+							</label>
+							<label class="btn btn-dark">
+								<input id="option2" type="radio" name="searchType2" autocomplete="off" value="ICAO">OACI
+							</label>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row">
+						<label class="col-md-7 col-form-label fw-bold" for="arrivalSearch">Recherche :</label>
+						<div class="col-md-5">
+							<input class="form-control bg-dark text-light text-center" type="text" name="arrivalSearch" id="arrivalSearch">
+							<small class="form-text text-warning">minimum 2 caractères</small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-7 col-form-label fw-bold" for="arrivalAirfieldChoice">aéroport d'arrivée</label>
+						<div class="col-md-5">
+							<select id="arrivalAirfieldChoice" class="form-select bg-dark text-light text-center">
+								<option>Choix</option>
+							</select>
+						</div>
+					</div>
+				</fieldset>
+				<div class="justify-content-center row">
+					<button id="insertAirfields" class="shadow-lg btn btn-primary col-md-6" type="button">Insérer ces aéroports</button>
+				</div>
+			</form>
+			<form action="#" id="providedPointForm" name="providedPointForm" class="col-12 col-lg-4 d-none">
+				<h4 class="text-center text-dark">Entrer un nouveau point</h4>
+				<fieldset id="pointTypeFieldset" class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+					<div class="form-group row">
+						<label class="col-md-7 col-form-label fw-bold" for="pointType">Type de point : </label>
+						<div class="col-md-5">
+							<select id="pointType" class="form-select bg-dark text-light text-center">
+								<option>point de CTL</option>
+								<option>point IFR</option>
+							</select>
+						</div>
+					</div>
+					<br>
+					<div id="pointBeginingPara" class="form-group row d-none">
+						<label class="col-md-7 col-form-label fw-bold" for="pointBegining">Recherche : </label>
+						<div class="col-md-5">
+							<input id="pointBegining" class="form-control bg-dark text-light text-center" type="text" name="pointBegining">
+						</div>
+					</div>
+					<br>
+					<div id="ifrpointsPara" class="form-group row d-none">
+						<label class="col-md-7 col-form-label fw-bold" for="ifrpoints">Choisissez votre point :</label>
+						<div class="col-md-5">
+							<select id="ifrpoints" class="form-select bg-dark text-light text-center">
+								<option>Choix</option>
+							</select>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset id="pointDatas" class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+					<div class="form-group row">
+						<label class="col-md-7 col-form-label fw-bold" for="pointName">Nom du point : </label>
+						<div class="col-md-5">
+							<input class="form-control bg-dark text-light text-center" type="text" name="pointName" id="pointName" data-type="text" data-placeholder="">
+							<small class="form-text text-warning">moins de 20 caractères</small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-7 col-form-label fw-bold" for="pointAlti">Altitude du point : </label>
+						<div class="col-md-5">
+							<input class="form-control bg-dark text-light text-center" type="number" name="pointAlti" id="pointAlti" min="0" max="30000" data-type="number" data-placeholder="">
+							<small class="form-text text-warning">en pieds</small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-7 col-form-label fw-bold" for="northSouthcoordinate">Coordonnée N/S : </label>
+						<div class="col-md-5">
+							<input class="form-control bg-dark text-light text-center" type="text" name="northSouthcoordinate" id="northSouthcoordinate" data-type="latitude" data-placeholder="">
+							<small class="form-text text-warning">format : Nxx xx.xx </small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-7 col-form-label fw-bold" for="eastWestcoordinate">Coordonnée E/W : </label>
+						<div class="col-md-5">
+							<input class="form-control bg-dark text-light text-center" type="text" name="eastWestcoordinate" id="eastWestcoordinate" data-type="longitude" data-placeholder="">
+							<small class="form-text text-warning">format : Wxxx xx.xx </small>
+						</div>
+					</div>
+				</fieldset>
+				<div class="form-group row justify-content-center">
+					<button id="createPointButton" class="shadow-lg btn btn-primary col-md-4" type="button">Créer</button>
+					<div class="col-md-2"></div>
+					<button id="razPointButton" class="shadow-lg btn btn-danger col-md-4" type="button">Effacer</button>
+				</div>
+			</form>
+			<div class="col-12 col-lg-8">
+				<table id="table" class="table table-sm table-hover table-dark table-striped text-center mt-4">
+					<thead>
+						<tr>
+							<th scope="col"></th>
+							<th scope="col">Nom</th>
+							<th scope="col">N/S</th>
+							<th scope="col">E/W</th>
+							<th scope="col">Altitude</th>
+							<th scope="col">QFEc</th>
+							<th scope="col">Distance</th>
+							<th scope="col">D restante</th>
+							<th scope="col">Infos</th>
+							<th scope="col">Sauvegarder</th>
+						</tr>
+					</thead>
+					<tbody id="tableBody">
+						<tr id="departureAirfield" class="airfields">
+							<th scope="row">Départ</th>
+							<td class="name"></td>
+							<td class="latitude"></td>
+							<td class="longitude"></td>
+							<td class="altitude"></td>
+							<td class="qfec"></td>
+							<td class="distance"></td>
+							<td class="remainingDistance"></td>
+							<td class="infos">/</td>
+							<td class="save">/</td>
+						</tr>
+						<tr id="arrivalAirfield" class="airfields">
+							<th scope="row">Arrivée</th>
+							<td class="name"></td>
+							<td class="latitude"></td>
+							<td class="longitude"></td>
+							<td class="altitude"></td>
+							<td class="qfec"></td>
+							<td class="distance"></td>
+							<td class="remainingDistance"></td>
+							<td class="infos">/</td>
+							<td class="save">/</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+		<section id="converter" class="d-none row">
+			<form action="#" name="mgrsToLatLongForm" id="mgrsToLatLongForm" class="mgrsToLatLongForm col-12 col-lg-6">
+				<fieldset id="mgrsToLatLongFieldset" class="shadow-lg mgrsToLatLongFieldset border border-dark text-dark rounded p-2 m-2">
+					<legend class="text-center fw-bold">Convertir MGRS en Lat Long</legend>
+					<div class="form-group row m-2">
+						<label class="col-md-8 col-form-label fw-bold" for="mgrsToConvert">MGRS à convertir : ( 31T FJ 64235 52345 )</label>
+						<div class="col-md-4">
+							<input type="text" name="mgrsToConvert"  class="form-control bg-dark text-light text-center" id="mgrsToConvert" data-type="MGRS" data-placeholder="Mauvais format !">
+						</div>
+					</div>
+					<div class="form-group row justify-content-center m-2">
+						<button id="convertMgrsToLatLong" class="shadow-lg btn btn-primary col-md-4" type="button">Convertir</button>
+						<div class="col-md-1"></div>
+						<button id="razMgrsToLatLong" class="shadow-lg btn btn-danger col-md-4" type="button">Effacer</button>
+					</div>
+					<div class="form-group row m-2">
+						<label class="col-md-8 col-form-label fw-bold" for="LatConverted">Latitude convertie : </label>
+						<div class="col-md-4">
+							<input type="text" name="LatConverted"  class="form-control bg-dark text-light text-center" id="LatConverted" placeholder="" readonly='readonly'>
+						</div>
+					</div>
+					<div class="form-group row m-2">
+						<label class="col-md-8 col-form-label fw-bold" for="LongConverted">Longitude convertie : </label>
+						<div class="col-md-4">
+							<input type="text" name="LongConverted"  class="form-control bg-dark text-light text-center" id="LongConverted" placeholder="" readonly='readonly'>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset id="LatLongToMgrsfieldset" class="shadow-lg LatLongToMgrsfieldset border border-dark text-dark rounded p-2 m-2">
+					<legend class="text-center fw-bold">Convertir Lat Long en MGRS</legend>
+						<div class="form-group row m-2">
+							<label class="col-md-8 col-form-label fw-bold" for="LatToConvert">Latitude à convertir : ( Nxx xx.xx )</label>
+							<div class="col-md-4">
+								<input type="text" name="LatToConvert"  class="form-control bg-dark text-light text-center" id="LatToConvert" data-type="latitude" data-placeholder="Mauvais format !">
+							</div>
+						</div>
+						<div class="form-group row m-2">
+							<label class="col-md-8 col-form-label fw-bold" for="LongToConvert">Longitude à convertir : ( Wxxx xx.xx )</label>
+							<div class="col-md-4">
+								<input type="text" name="LongToConvert"  class="form-control bg-dark text-light text-center" id="LongToConvert" data-type="longitude" data-placeholder="Mauvais format !">
+							</div>
+						</div>
+						<div class="form-group row justify-content-center m-2">
+							<button id="convertLatLongToMgrs" class="shadow-lg btn btn-primary col-md-4" type="button">Convertir</button>
+							<div class="col-md-1"></div>
+							<button id="razLatLongToMgrs" class="shadow-lg btn btn-danger col-md-4" type="button">Effacer</button>
+						</div>
+						<div class="form-group row m-2">
+							<label class="col-md-8 col-form-label fw-bold" for="mgrsConverted">Coordonées MGRS convertie : </label>
+							<div class="col-md-4">
+								<input type="text" name="mgrsConverted"  class="form-control bg-dark text-light text-center" id="mgrsConverted" placeholder="" readonly='readonly'>
+							</div>
+						</div>
+				</fieldset>
+			</form>
+			<form action="#" name="distanceConverter" id="distanceConverter" class="col-12 col-lg-6">
+				<fieldset id="distanecConverterFieldset" class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+					<legend class="text-center fw-bold">Convertisseur de distances</legend>
+					<div class="form-group row p-3 m-3">
+						<label class="col-md-8 col-form-label fw-bold" for="meters">Valeur en mètres : </label>
+						<div class="col-md-4">
+							<input type="number" name="meters" class="form-control bg-dark text-light text-center" id="meters" min="0" max="1000000000000" data-type="number" data-placeholder="Nombre positif !">
+						</div>
+					</div>
+					<div class="form-group row p-3 m-3">
+						<label class="col-md-8 col-form-label fw-bold" for="feets">Valeur en pieds : </label>
+						<div class="col-md-4">
+							<input type="number" name="feets" class="form-control bg-dark text-light text-center" id="feets" min="0" max="1000000000000" data-type="number" data-placeholder="Nombre positif !">
+						</div>
+					</div>
+					<div class="form-group row p-3 m-3">
+						<label class="col-md-8 col-form-label fw-bold" for="nautics">Valeur en nautiques : </label>
+						<div class="col-md-4">
+							<input type="number" name="nautics" class="form-control bg-dark text-light text-center" id="nautics" min="0" max="1000000000000" data-type="number" data-placeholder="Nombre positif !">
+						</div>
+					</div>
+					<div class="justify-content-center row">
+						<button id="razDistanceConverter" class="shadow-lg btn btn-primary col-md-4" type="button">Effacer</button>
+					</div>
+				</fieldset>
+			</form>
+		</section>
+		<section id="shot" class="d-none row">
+			<form action="#" name="providedDatasFire" id="providedDatasFire" class="providedDatasFire col-12 col-lg-6">
+				<fieldset id="providedDatasFireFieldset" class="shadow-lg providedDatasFireFieldset border border-dark text-dark rounded p-3 m-3">
+					<legend class="text-center fw-bold">Données du tir</legend>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="gbuType">Type de GBU : </label>
+						<div class="col-md-4">
+							<select class="form-select bg-dark text-light text-center" name="gbuType" id="gbuType" class="editable">
+								<option>12</option>
+								<option>58</option>
+							</select>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="ISAType">Atmosphère : </label>
+						<div class="col-md-4">
+							<select class="form-select bg-dark text-light text-center" name="ISAType" id="ISAType" class="editable">
+								<option>Froide</option>
+								<option>Tempérée</option>
+								<option>Chaude</option>
+							</select>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="windDirection">Axe du vent : </label>
+						<div class="col-md-4">
+							<select class="form-select bg-dark text-light text-center" name="windDirection" id="windDirection" class="editable"></select>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="WindForce">Force du vent ( kts ) : </label>
+						<div class="col-md-4">
+							<select class="form-select bg-dark text-light text-center" name="WindForce" id="WindForce" class="editable"></select>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="shotDirection">Axe de tir : </label>
+						<div class="col-md-4">
+							<select class="form-select bg-dark text-light text-center" name="shotDirection" id="shotDirection" class="editable"></select>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="shotHeight">Hauteur de tir ( 100 ft ) : </label>
+						<div class="col-md-4">
+							<select class="form-select bg-dark text-light text-center" name="shotHeight" id="shotHeight" class="editable"></select>
+						</div>
+					</div>				
+				</fieldset>
+				<div class="justify-content-center row">
+					<button id="calculateFireDistance" class="shadow-lg btn btn-primary col-md-4" type="button">Calculer</button>
+				</div>
+			</form>
+			<form action="#" name="calculatedDatasFire" id="calculatedDatasFire" class="calculatedDatasFire col-12 col-lg-6">
+				<fieldset id="calculatedDatasFireFieldset" class="shadow-lg calculatedDatasFireFieldset border border-dark text-dark rounded p-3 m-3">
+					<legend class="text-center fw-bold">Données calculées pour le tir</legend>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="WindAngle">Angle au vent : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="WindAngle" id="WindAngle" value="" readonly='readonly'>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="DropTime">Temps de chute : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="DropTime" id="DropTime" value="" readonly='readonly'>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="illuDelay">Retard à l'illu : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="illuDelay" id="illuDelay" value="" readonly='readonly'>
+						</div>
+					</div>
+					<br>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="shotDistanceWithoutWind">Distance de tir sans vent : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="shotDistanceWithoutWind" id="shotDistanceWithoutWind" value="" readonly='readonly'>
+						</div>
+					</div>
+					<hr><hr>
+					<div class="form-group row">
+						<label class="col-md-8 col-form-label fw-bold" for="shotDistance">Distance de tir : </label>
+						<div class="col-md-4">
+							<input class="form-control bg-dark text-light text-center" type="text" name="shotDistance" id="shotDistance" value="" readonly='readonly'>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</section>
+		<div class="modal fade" id="saveTransitModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="saveTransitModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+			  	<div class="modal-content bg-dark">
+					<div class="modal-header text-light">
+						<h5 class="modal-title" id="saveTransitModalLabel">Sauvegarder un transit</h5>
+						<button type="button" class="shadow-lg btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group row">
+							<label class="col-md-5 col-form-label fw-bold" for="savedTransitName">Nom du transit : </label>
+							<div class="col-md-7">
+								<div class="input-group">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="1" type="text" name="savedTransitName" id="savedTransitName" value="" aria-describedby="newTransitImg">
+									<div class="input-group-text bg-dark">
+										<input id="newTransitImg" class="form-check-input mt-0" type="checkbox" value="">
+									</div>
+								</div>
+								<small id="newTransitSmall" class="form-text text-warning"></small>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+					<button type="button" class="shadow-lg btn btn-danger" data-bs-dismiss="modal" aria-label="close">Annuler</button>
+					<button id="saveTransitModalButton" type="button" class="shadow-lg btn btn-primary">Sauvegarder</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="loadTransitModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loadTransitModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+			  	<div class="modal-content bg-dark text-light">
+					<div class="modal-header">
+						<h5 class="modal-title" id="loadTransitModalLabel"><img class="align-top" src="images/warning.png" width="25" height="25"><span class="text-warning"> Charger un transit effacera celui en cours </span><img class="align-top" src="images/warning.png" width="25" height="25"></h5>
+						<button type="button" class="shadow-lg btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group row">
+							<label class="col-md-5 col-form-label fw-bold" for="transitToSelect">Transit à charger : </label>
+							<div class="col-md-7">
+								<select class="form-select bg-dark rounded text-light text-center" name="transitToSelect" id="transitToSelect"></select>
+							</div>
+						</div>	
+					</div>
+					<div class="modal-footer">
+					<button type="button" class="shadow-lg btn btn-danger" data-bs-dismiss="modal" aria-label="close">Annuler</button>
+					<button id="loadTransitModalButton" type="button" class="shadow-lg btn btn-primary">Charger</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="calculatePLEModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="calculatePLEModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+			  	<div class="modal-content bg-dark">
+					<div class="modal-header text-light">
+					<h5 class="modal-title" id="calculatePLEModalLabel">Point et distance PLE</h5>
+					<button type="button" class="shadow-lg btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group row">
+							<label class="col-md-5 col-form-label fw-bold" for="savedTransitName">Point PLE : </label>
+							<div class="col-md-7">
+								<input class="form-control bg-dark text-light rounded text-center" type="text" name="savedTransitName" id="PLEPointName" value="" readonly>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-5 col-form-label fw-bold" for="savedTransitName">Distance PLE : </label>
+							<div class="col-md-7">
+								<input class="form-control bg-dark text-light rounded text-center" type="text" name="savedTransitName" id="PLEPointDistance" value="" readonly>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="close">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal" id="createNewAirfieldModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createNewAirfieldModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+			  	<div class="modal-content bg-dark">
+					<div class="modal-header text-light">
+						<h5 class="modal-title" id="createNewAirfieldModalLabel">Créer un nouvel aéroport dans la base de données</h5>
+						<button type="button" class="shadow-lg btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group row m-2">
+							<label class="col-md-5 col-form-label fw-bold" for="newAirfieldICAO">Code OACI : </label>
+							<div class="col-md-7">
+								<div class="input-group">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="1" type="text" name="newAirfieldICAO" id="newAirfieldICAO" value="" aria-describedby="newAirfieldICAOImg">
+									<div class="input-group-text bg-dark">
+										<input id="newAirfieldICAOImg" class="form-check-input mt-0" type="checkbox" value="">
+									</div>
+								</div>
+								<small id="newAirfieldICAOSmall" class="form-text text-warning">Le code OACI doit avoir 4 caractères</small>
+							</div>
+						</div>
+						<div class="form-group row m-2">
+							<label class="col-md-5 col-form-label fw-bold" for="newAifieldName">Nom : </label>
+							<div class="col-md-7">
+								<div class="input-group">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="2" type="text" name="newAifieldName" id="newAifieldName" value="" aria-describedby="newAifieldNameImg">
+									<div class="input-group-text bg-dark">
+										<input id="newAifieldNameImg" class="form-check-input mt-0" type="checkbox" value="">
+									</div>
+								</div>
+								<small id="newAifieldNameSmall" class="form-text text-warning">Le nom du terrain doit avoir au moins 3 caractères</small>
+							</div>
+						</div>
+						<div class="form-group row m-2">
+							<label class="col-md-5 col-form-label fw-bold" for="newAifieldLatitude">Latitude : </label>
+							<div class="col-md-7">
+								<div class="input-group">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="3" type="text" name="newAifieldLatitude" id="newAifieldLatitude" value="" data-type="latitude" aria-describedby="newAifieldLatitudeImg">
+									<div class="input-group-text bg-dark">
+										<input id="newAifieldLatitudeImg" class="form-check-input mt-0" type="checkbox" value="">
+									</div>
+								</div>
+								<small id="newAifieldLatitudeSmall" class="form-text text-warning">Format : NXX XX.XX</small>
+							</div>
+						</div>
+						<div class="form-group row m-2">
+							<label class="col-md-5 col-form-label fw-bold" for="newAifieldLongitude">Longitude : </label>
+							<div class="col-md-7">
+								<div class="input-group">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="4" type="text" name="newAifieldLongitude" id="newAifieldLongitude" value="" data-type="longitude" aria-describedby="newAifieldLongitudeImg">
+									<div class="input-group-text bg-dark">
+										<input id="newAifieldLongitudeImg" class="form-check-input mt-0" type="checkbox" value="">
+									</div>
+								</div>
+								<small id="newAifieldLongitudeSmall" class="form-text text-warning">Format : WXXX XX.XX</small>
+							</div>
+						</div>
+						<div class="form-group row m-2">
+							<label class="col-md-5 col-form-label fw-bold" for="newAifieldElevation">Hauteur : </label>
+							<div class="col-md-7">
+								<div class="input-group">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="5" type="text" name="newAifieldElevation" id="newAifieldElevation" value="" data-type="number" min="0" max="30000" aria-describedby="newAifieldElevationImg">
+									<div class="input-group-text bg-dark">
+										<input id="newAifieldElevationImg" class="form-check-input mt-0" type="checkbox" value="">
+									</div>
+								</div>
+								<small id="newAifieldElevationSmall" class="form-text text-warning">Doit être compris entre 0 et 30 000 pieds</small>
+							</div>
+						</div>
+						<div class="form-group row m-2">
+							<label class="col-md-5 col-form-label fw-bold" for="newAifieldType">Type : </label>
+							<div class="col-md-7">
+								<select class="form-select bg-dark rounded text-light text-center" tabindex="6" name="newAifieldType" id="newAifieldType">
+									<option>CIVIL</option>
+									<option>MILITAIRE</option>
+									<option>CIVIL & MILITAIRE</option>
+								</select>
+							</div>
+						</div>	
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="shadow-lg btn btn-danger" data-bs-dismiss="modal" aria-label="close">Annuler</button>
+						<button id="saveNewAirfieldModal" type="button" class="shadow-lg btn btn-primary" disabled="disabled">Sauvegarder</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal" id="createNewPointModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createNewPointModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+			  	<div class="modal-content bg-dark">
+					<div class="modal-header text-light">
+						<h5 class="modal-title" id="createNewPointModalLabel">Créer un nouveau point dans la base de données</h5>
+						<button type="button" class="shadow-lg btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group row m-2">
+							<label class="col-md-5 col-form-label fw-bold" for="newPointName">Nom : </label>
+							<div class="col-md-7">
+								<div class="input-group">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="1" type="text" name="newPointName" id="newPointName" value="" aria-describedby="newPointNameImg" data-type="text" autofocus>
+									<div class="input-group-text bg-dark">
+										<input id="newPointNameImg" class="form-check-input mt-0" type="checkbox" value="">
+									</div>
+								</div>
+								<small id="newPointNameSmall" class="form-text text-warning">Le nom du point doit avoir au moins 3 caractères</small>
+							</div>
+						</div>
+						<div class="form-group row m-2">
+							<label class="col-md-5 col-form-label fw-bold" for="newPointElev">Hauteur : </label>
+							<div class="col-md-7">
+								<div class="input-group">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="2" type="text" name="newPointElev" id="newPointElev" value="" aria-describedby="newPointElevImg" data-type="number" min="0" max="30000">
+									<div class="input-group-text bg-dark">
+										<input id="newPointElevImg" class="form-check-input mt-0" type="checkbox" value="">
+									</div>
+								</div>
+								<small id="newPointElevSmall" class="form-text text-warning">Doit être compris entre 0 et 30 000 pieds</small>
+							</div>
+						</div>
+						<div class="form-group row m-2">
+							<label class="col-md-5 col-form-label fw-bold" for="newPointLatitude">Latitude : </label>
+							<div class="col-md-7">
+								<div class="input-group">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="3" type="text" name="newPointLatitude" id="newPointLatitude" value="" data-type="latitude" aria-describedby="newPointLatitudeImg">
+									<div class="input-group-text bg-dark">
+										<input id="newPointLatitudeImg" class="form-check-input mt-0" type="checkbox" value="">
+									</div>
+								</div>
+								<small id="newPointLatitudeSmall" class="form-text text-warning">Format : NXX XX.XX</small>
+							</div>
+						</div>
+						<div class="form-group row m-2">
+							<label class="col-md-5 col-form-label fw-bold" for="newPointLongitude">Longitude : </label>
+							<div class="col-md-7">
+								<div class="input-group">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="4" type="text" name="newPointLongitude" id="newPointLongitude" value="" data-type="longitude" aria-describedby="newPointLongitudeImg">
+									<div class="input-group-text bg-dark">
+										<input id="newPointLongitudeImg" class="form-check-input mt-0" type="checkbox" value="">
+									</div>
+								</div>
+								<small id="newPointLongitudeSmall" class="form-text text-warning">Format : WXXX XX.XX</small>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="shadow-lg btn btn-danger" data-bs-dismiss="modal" aria-label="close">Annuler</button>
+						<button id="saveNewPointModal" type="button" class="shadow-lg btn btn-primary" disabled="disabled">Sauvegarder</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="Javascript/jquery.js"></script>
+		<script src="Javascript/bootstrap.bundle.min.js"></script>
+		<script src="Javascript/jquery-ui.js"></script>
+		<script src="Javascript/class.js"></script>
+		<script src="Javascript/tools.js"></script>
+		<script src="Javascript/script.js"></script>
+		<script src="Javascript/altimeterScript.js"></script>
+		<script src="Javascript/convert.js"></script>
+		<script src="Javascript/ctl.js"></script>
+		<script src="Javascript/firescript.js"></script>
+	</body>
+</html>
