@@ -20,9 +20,36 @@ function isValid(input){
 		case 'longitude' :
 			return /[EW]0\d{2}\s\d{2}\.\d{2}|[EW]1[0-7]\d\s\d{2}\.\d{2}|[EW]180\s00\.00/.test(input.val());
 			break;
-		case 'text' : 
-			return ( input.val() != '' ) && ( input.val().length <= 10 ) && ( input.val().length >= 3 )
+		case 'text' :
+			return ( input.val() != '' ) && ( input.val().length <= input.attr('data-max') ) && ( input.val().length >= input.attr('data-min') )
 	}
+}
+async function checkForm(form){
+	let enable = true;
+	for ( let i = 0 ; i < $(form+' div[data-check=toCheck]').length ; i++){
+		if ( isValid($(form+' div[data-check=toCheck] input').eq(i))){
+			$(form+' div[data-check=toCheck] input').eq(i).removeClass('is-invalid').addClass('is-valid');
+			$(form+' div[data-check=toCheck] small').eq(i).html('valide');
+			if ( typeof $(form+' div[data-check=toCheck] input').eq(i).attr('data-url') !== 'undefined' ){
+				const response = await postFetchRequest($(form+' div[data-check=toCheck] input').eq(i).attr('data-url'), {"name":$(form+' div[data-check=toCheck] input').eq(i).val().toUpperCase(), type:$(form+' div[data-check=toCheck] input').eq(i).attr('data-bddtype')});
+				if (typeof response[0] !== 'undefined') {
+					$(form+' div[data-check=toCheck] small').eq(i).html('Déjà existant');
+					$(form+' div[data-check=toCheck] input').eq(i).removeClass('is-valid').addClass('is-invalid');
+				}
+			}
+		}
+		else {
+			$(form+' div[data-check=toCheck] input').eq(i).removeClass('is-valid').addClass('is-invalid');
+			$(form+' div[data-check=toCheck] small').eq(i).html($(form+' div[data-check=toCheck] input').eq(i).attr('data-remark'));
+		}
+		enable = enable && ($(form+' div[data-check=toCheck] small').eq(i).html() == 'valide');
+	}
+	$(form+' button[data-activate=toActivate]').prop('disabled', !enable);
+}
+function resetForm(form){
+	$(form+' input').val('');
+	$(form+' select[data-reset=toReset]').empty();
+	$(form+' button[data-activate]').prop('disabled', checkForm(form));
 }
 function hasEnoughDatas(id, datasNeeded){
 	let enough = true;

@@ -27,4 +27,6 @@ function displayMetersAndFeetsFromNauticalMiles(){
 	$('#feets').on('keyup', displayMetersAndNauticalMilesFromFeets);
 	$('#nautics').on('keyup', displayMetersAndFeetsFromNauticalMiles);
 	$('#razDistanceConverter').on('click', function(){$('#distanecConverterFieldset input').val('');});
+	$('#mgrsToLatLongFieldset input').on('keyup', function(){checkForm('#mgrsToLatLongFieldset');});
+	$('#LatLongToMgrsfieldset input').on('keyup', function(){checkForm('#LatLongToMgrsfieldset');});
 })();

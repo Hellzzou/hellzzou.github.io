@@ -9,10 +9,6 @@ function insertPointInTable(id, point){
   		return new bootstrap.Tooltip(tooltipTriggerEl)
 	});
 }
-function removePoint(deleteButton){
-	deleteButton.remove();
-	calculateAllDistancesAndCorrectedQfe();
-}
 function createNewLineInTable(point){
 	let id = ( $('tr').length == 3 ) ? 0 : $('tr').eq($('tr').length - 2).attr('id') + 1;
 	let newTr = $('<tr>',{
@@ -23,7 +19,10 @@ function createNewLineInTable(point){
 		class : 'pointer',
 		html : '<img src="images/croixrouge1.png" width="18" height="18">',
 	});
-	newTh.on("click", function(){removePoint(this.parentNode)});
+	newTh.on("click", function(){
+		this.parentNode.remove();
+		calculateAllDistancesAndCorrectedQfe();
+	});
 	newTh.appendTo(newTr);
 	$('<td>',{class:'name'}).appendTo(newTr);
 	$('<td>',{class:'latitude'}).appendTo(newTr);
@@ -44,22 +43,28 @@ function createNewLineInTable(point){
 	});
 	tdsave.on('click',function(){
 		let id = this.parentNode.getAttribute('id');
-		saveNewPoint($('#'+id+' td[class=name]').html(), $('#'+id+' td[class=altitude]').html(), $('#'+id+' td[class=latitude]').html(), $('#'+id+' td[class=longitude]').html())});
+		saveNewPointModal($('#'+id+' td[class=name]').html(), $('#'+id+' td[class=altitude]').html(), $('#'+id+' td[class=latitude]').html(), $('#'+id+' td[class=longitude]').html())});
 	tdsave.appendTo(newTr);
 	$('#tableBody tr:last').before(newTr);
 	insertPointInTable('#'+id, point);
 }
-function displayPoint(){
-	if (isValid($('#pointName')) && isValid($('#northSouthcoordinate')) && isValid($('#eastWestcoordinate'))){
-		let point = Point.createInString($('#pointName').val(), $('#northSouthcoordinate').val(), $('#eastWestcoordinate').val(), $('#pointAlti').val());
-		createNewLineInTable(point);
-	}
-}
 async function loadIFRPointsBeginingByInSelect(requestedName){
-	const points = ( $('#pointType').val() == 'point de CTL' ) ? await postFetchRequest('http://localhost:3000/api/CTLPoints/beginningBy', {"name":requestedName}) : await postFetchRequest('http://localhost:3000/api/IFRpoints/beginningBy', {"name":requestedName});
-	document.getElementById('ifrpoints').length = 1;
-	if ( $('#pointType').val() == 'point de CTL' ) for ( let i = 0 ; i < points.length ; i++ ) $('#ifrpoints').append(new Option(points[i].name, points[i].name));
-	else for ( let i = 0 ; i < points.length ; i++ ) $('#ifrpoints').append(new Option(points[i].WPT_IDENT, points[i].WPT_IDENT));
+	$('#ifrpoints').empty();
+	resetForm('#pointDatas');
+	resetForm('#pointDatas');
+	if ( $('#pointBegining').val().length >= 2 ){
+		const points = ( $('#pointType').val() == 'point de CTL' ) ? await postFetchRequest('http://localhost:3000/api/CTLPoints/beginningBy', {"name":requestedName}) : await postFetchRequest('http://localhost:3000/api/IFRpoints/beginningBy', {"name":requestedName});
+		if ( typeof points[0] == 'undefined' ) {
+			$('#pointBegining').removeClass('is-valid').addClass('is-invalid');
+			$('#pointBeginingSmall').html('pas de correspondance');
+		}
+		else{
+			if ( $('#pointType').val() == 'point de CTL' ) for ( let i = 0 ; i < points.length ; i++ ) $('#ifrpoints').append(new Option(points[i].name, points[i].name));
+			else for ( let i = 0 ; i < points.length ; i++ ) $('#ifrpoints').append(new Option(points[i].WPT_IDENT, points[i].WPT_IDENT));
+			DisplayIfrPointInformations($('#ifrpoints option').eq(0).val());
+		}
+	}
+	checkForm('#pointDatas');
 }
 async function DisplayIfrPointInformations(ifrPointName){
 	let points;
@@ -70,12 +75,13 @@ async function DisplayIfrPointInformations(ifrPointName){
 	}
 	else{
 		points = await postFetchRequest('http://localhost:3000/api/IFRpoint', {"name":ifrPointName});
-		point = Point.createInDegrees(points[0].WPT_IDENT, points[0].WGS_DLAT, points[0].WGS_DLONG, '');
+		point = Point.createInDegrees(points[0].WPT_IDENT, points[0].WGS_DLAT, points[0].WGS_DLONG, 0);
 	}
 	$('#pointName').val(point.name);
 	$('#pointAlti').val(point.altitude);
 	$('#northSouthcoordinate').val(point.latitudeInString);
 	$('#eastWestcoordinate').val(point.longitudeInString);
+	checkForm('#pointDatas');
 }
 async function saveTransitInDb(){
 	let transit = new Transit($('#savedTransitName').val().toUpperCase(),[]);
@@ -88,12 +94,10 @@ async function saveTransitInDb(){
 }
 function displayTransitToSaveInDialog(){
 	if ( $('#departureAirfield td[class=name]').html() != '' && $('#arrivalAirfield td[class=name]').html() != ''){
-		$('#newTransitImg').prop('checked', false);
-		$('#saveTransitModalButton').prop('disabled', true);
 		$('#saveTransitModal').modal('show');
 		$('#savedTransitName').val($('#departureAirfield td[class=name]').html() +' - '+ $('#arrivalAirfield td[class=name]').html());
-		checkinputTransit($('#savedTransitName'), $('#newTransitSmall'), $('#newTransitImg'), 'Le nom du transit doit avoir au moins 5 caractères', 'Ce nom de transit existe déjà', 'transit', '#saveTransitModal small', '#saveTransitModalButton');
-		$('#savedTransitName').on('keyup', function(){checkinputTransit($('#savedTransitName'), $('#newTransitSmall'), $('#newTransitImg'), 'Le nom du transit doit avoir au moins 5 caractères', 'Ce nom de transit existe déjà', 'transit', '#saveTransitModal small', '#saveTransitModalButton');});
+		checkForm('#saveTransitModal');
+		$('#savedTransitName').on('keyup', function(){checkForm('#saveTransitModal');});
 		$('#saveTransitModalButton').on("click", saveTransitInDb);
 	}
 	else alert('Vous essayez de sauvegarder un transit vide');
@@ -108,6 +112,7 @@ async function DisplayTransitInTable(transitName){
 	insertPointInTable('#arrivalAirfield', Point.createInString(points[points.length - 1].name, points[points.length - 1].latitudeInString, points[points.length - 1].longitudeInString, points[points.length - 1].altitude));
 	$('#airfields').addClass('d-none');
 	$('#providedPointForm').removeClass('d-none');
+	resetForm('#providedPointForm');
 	$('#loadTransitModal').modal('hide');
 }
 async function loadTransitInDialog(){
@@ -123,15 +128,25 @@ async function insertAirfieldsInTable(){
 		arrival = await postFetchRequest('http://localhost:3000/api/InsertAirfields', {"name":$('#arrivalAirfieldChoice').val(),"type":$('input[name=searchType2]:checked').val()});
 		insertPointInTable('#departureAirfield', Point.createInDegrees(departure[0].NAME, departure[0].WGS_DLAT, departure[0].WGS_DLONG, departure[0].ELEV));
 		insertPointInTable('#arrivalAirfield', Point.createInDegrees(arrival[0].NAME, arrival[0].WGS_DLAT, arrival[0].WGS_DLONG, arrival[0].ELEV));
- 		$('#airfields').addClass('d-none');
+		$('#airfields').addClass('d-none');
 		$('#providedPointForm').removeClass('d-none');
+		resetForm('#providedPointForm');
 	}
 	else alert("Vous devez choisir un terrain de départ et d'arrivée");
 }
-async function loadAirfieldsSelect(airfieldType, airfieldSearch, airfieldSelect){
-	const airfileds = await postFetchRequest('http://localhost:3000/api/loadAirfields', {"name":airfieldSearch,"type":airfieldType.val()});
-	airfieldSelect.length = 1;
-	for ( let i = 0 ; i < airfileds.length ; i++) airfieldSelect.options[airfieldSelect.options.length] = ( airfieldType.val() == 'NAME' ) ? new Option(airfileds[i].NAME) : new Option(airfileds[i].ICAO);
+async function loadAirfieldsSelect(fieldset, radioName){
+	$(fieldset+' select').empty();
+	if ( $(fieldset+' input[data-type=text]').val().length >= 2){
+		const airfileds = await postFetchRequest('http://localhost:3000/api/loadAirfields', {"name":$(fieldset+' input[data-type=text]').val(),"type":$(fieldset+' input[name='+radioName+']:checked').val()});
+		if ( typeof airfileds[0] == 'undefined' ) {
+			$(fieldset+' input[data-type=text]').removeClass('is-valid').addClass('is-invalid');
+			$(fieldset+' small').html('pas de correspondace');
+		}
+		for ( let i = 0 ; i < airfileds.length ; i++) {
+			if (($(fieldset+' input[name='+radioName+']:checked').val() == 'NAME' )) $(fieldset+' select').append(new Option(airfileds[i].NAME));
+			else $(fieldset+' select').append(new Option(airfileds[i].ICAO));
+		}
+	}
 }
 function displayPLEDialog(){
 	$('#calculatePLEModal').modal('show');
@@ -148,93 +163,6 @@ function displayAirfieldsSelection(){
 	$('#arrivalAirfieldChoice').append(new Option($('#arrivalAirfield td[class=name').html()));
 	$('#departureAirfieldChoice').val($('#departureAirfield td[class=name').html());
 	$('#arrivalAirfieldChoice').val($('#arrivalAirfield td[class=name').html());
-}
-function resetSaveAIrfieldModal(){
-	$('#createNewAirfieldModal input[type=text]').val('');
-	$('#newAirfieldICAOSmall').html('Le code OACI doit avoir 4 caractères');
-	$('#newAirfieldICAOImg').prop('checked', false);
-	$('#newAifieldNameSmall').html('Le nom du terrain doit avoir au moins 3 caractères');
-	$('#newAifieldNameImg').prop('checked', false);
-	$('#newAifieldLatitudeSmall').html('Format : NXX XX.XX');
-	$('#newAifieldLatitudeImg').prop('checked', false);
-	$('#newAifieldLongitudeSmall').html('Format : WXXX XX.XX');
-	$('#newAifieldLongitudeImg').prop('checked', false);
-	$('#newAifieldElevationSmall').html('Doit être compris entre 0 et 30 000 pieds');
-	$('#newAifieldElevationImg').prop('checked', false);
-	$('#newAifieldType').val('CIVIL');
-	$('#saveNewAirfieldModal').prop('disabled', true);
-}
-function enableSaveButton(smalls, button){
-	let enable = true;
-	for ( let i = 0 ; i < $(smalls).length ; i++) enable = enable && $(smalls).eq(i).html() == '';
-	if ( enable ) $(button).prop('disabled', false);
-	else $(button).prop('disabled', true);
-}
- async function checkInputAirfield(input, small, img, remark1, remark2, type, smalls, button){
-	let test = ( type == 'ICAO' ) ? input.val().length != 4 : input.val().length < 3;
-	if ( test) {
-		small.html(remark1);
-		img.prop('checked', false);
-	}
-	else {
-		const airfields = await postFetchRequest('http://localhost:3000/api/compareAirfields', {"name":input.val().toUpperCase(), "type":type});
-		if (typeof airfields[0] !== 'undefined') {
-			small.html(remark2);
-			img.prop('checked', false);
-		}
-		else {
-			small.html('');
-			img.prop('checked', true);
-		}
-	}
-	enableSaveButton(smalls, button);
-}
-async function checkinputTransit(input, small, img, remark1, remark2, type, smalls, button){
-	if ( input.val().length < 5) {
-		small.html(remark1);
-		img.prop('checked', false);
-	}
-	else {
-		const transits = await postFetchRequest('http://localhost:3000/api/compareTransit', {"name":input.val().toUpperCase()});
-		if (typeof transits[0] !== 'undefined') {
-			small.html(remark2);
-			img.prop('checked', false);
-		}
-		else {
-			small.html('');
-			img.prop('checked', true);
-		}
-	}
-	enableSaveButton(smalls, button);
-}
-async function checkinputPoint(input, small, img, remark1, remark2, type, smalls, button){
-	if ( !isValid(input)) {
-		small.html(remark1);
-		img.prop('checked', false);
-	}
-	else {
-		const points = await postFetchRequest('http://localhost:3000/api/comparePoint', {"name":input.val().toUpperCase()});
-		if (typeof points[0] !== 'undefined') {
-			small.html(remark2);
-			img.prop('checked', false);
-		}
-		else {
-			small.html('');
-			img.prop('checked', true);
-		}
-	}
-	enableSaveButton(smalls, button);
-}
-function checkinput(input, small, img, remark, smalls, button){
-	if ( isValid(input)) {
-		small.html('');
-		img.prop('checked', true);
-	}
-	else {
-		small.html(remark);
-		img.prop('checked', false);
-	}
-	enableSaveButton(smalls, button);
 }
 async function saveAirfieldinDB(){
 		let airfield = {
@@ -254,39 +182,10 @@ async function saveAirfieldinDB(){
 		}
 }
 function saveNewAifield(){
-	resetSaveAIrfieldModal();
+	resetForm('#createNewAirfieldModal');
 	$('#createNewAirfieldModal').modal('show');
-	$('#createNewAirfieldModal').on('shown.bs.modal', function () {
-		$('#newAirfieldICAO').trigger('focus')
-	  })
-	$('#newAirfieldICAO').on('keyup', function(){checkInputAirfield($('#newAirfieldICAO'), $('#newAirfieldICAOSmall'), $('#newAirfieldICAOImg'), 'Le code OACI doit avoir 4 caractères', 'Ce code OACI existe déjà', 'ICAO', '#createNewAirfieldModal small', '#saveNewAirfieldModal');});
-	$('#newAifieldName').on('keyup', function(){checkInputAirfield($('#newAifieldName'), $('#newAifieldNameSmall'), $('#newAifieldNameImg'), 'Le nom du terrain doit avoir au moins 3 caractères', 'Ce nom de terrain existe déjà', 'NAME', '#createNewAirfieldModal small', '#saveNewAirfieldModal');});
-	$('#newAifieldLatitude').on('keyup', function(){checkinput($('#newAifieldLatitude'), $('#newAifieldLatitudeSmall'), $('#newAifieldLatitudeImg'), 'Format : NXX XX.XX', '#createNewAirfieldModal small', '#saveNewAirfieldModal');});
-	$('#newAifieldLongitude').on('keyup', function(){checkinput($('#newAifieldLongitude'), $('#newAifieldLongitudeSmall'), $('#newAifieldLongitudeImg'), 'Format : WXXX XX.XX', '#createNewAirfieldModal small', '#saveNewAirfieldModal');});
-	$('#newAifieldElevation').on('keyup', function(){checkinput($('#newAifieldElevation'), $('#newAifieldElevationSmall'), $('#newAifieldElevationImg'), 'Doit être compris entre 0 et 30 000 pieds', '#createNewAirfieldModal small', '#saveNewAirfieldModal');});
+	$('#createNewAirfieldModal input').on('keyup', function(){checkForm('#createNewAirfieldModal');});
 	$('#saveNewAirfieldModal').on('click', saveAirfieldinDB);
-}
-function manageResearchInput(inputID, selectID, type, radioInput) {
-	if ( inputID.val().length >= 2 ){
-		if ( type == 'ifr' ) loadIFRPointsBeginingByInSelect(inputID.val());
-		else loadAirfieldsSelect(radioInput, inputID.val(), document.getElementById(selectID))
-	}
-	else document.getElementById(selectID).length = 1;	
-}
-function resetPointModal(name, altitude, latitude, longitude){
-	$('#newPointName').val(name);
-	$('#newPointElev').val(altitude);
-	$('#newPointLatitude').val(latitude);
-	$('#newPointLongitude').val(longitude);
-	$('#newPointNameSmall').html('Le nom du point doit avoir au moins 3 caractères');
-	$('#newPointNameImg').prop('checked', false);
-	$('#newPointElevSmall').html('Doit être compris entre 0 et 30 000 pieds');
-	$('#newPointElevImg').prop('checked', false);
-	$('#newPointLatitudeSmall').html('Format : NXX XX.XX');
-	$('#newPointLatitudeImg').prop('checked', false);
-	$('#newPointLongitudeSmall').html('Format : WXXX XX.XX');
-	$('#newPointLongitudeImg').prop('checked', false);
-	$('#saveNewPointModal').prop('disabled', true);
 }
 async function savePointinDb(){
 	let point = Point.createInString($('#newPointName').val().toUpperCase(), $('#newPointLatitude').val(), $('#newPointLongitude').val(), $('#newPointElev').val());
@@ -296,44 +195,37 @@ async function savePointinDb(){
 		setTimeout(()=>$('#savedAlert').removeClass('show'), 2000);
 	}
 }
-function saveNewPoint(name, altitude, latitude, longitude){
-	resetPointModal(name, altitude, latitude, longitude);
+function saveNewPointModal(name, altitude, latitude, longitude){
+	$('#newPointName').val(name);
+	$('#newPointElev').val(altitude);
+	$('#newPointLatitude').val(latitude);
+	$('#newPointLongitude').val(longitude);
 	$('#createNewPointModal').modal('show');
-	$('#createNewPointModal').on('shown.bs.modal', function () {
-		$('#newPointName').trigger('focus')
-	  })
-	checkinputPoint($('#newPointName'), $('#newPointNameSmall'), $('#newPointNameImg'), 'Le nom du point doit avoir au moins 3 caractères', 'Ce nom existe déjà', 'point', '#createNewPointModal small', '#saveNewPointModal');
-	checkinput($('#newPointElev'), $('#newPointElevSmall'), $('#newPointElevImg'), 'Doit être compris entre 0 et 30 000 pieds', '#createNewPointModal small', '#saveNewPointModal');
-	checkinput($('#newPointLatitude'), $('#newPointLatitudeSmall'), $('#newPointLatitudeImg'), 'Format : NXX XX.XX', '#createNewPointModal small', '#saveNewPointModal');
-	checkinput($('#newPointLongitude'), $('#newPointLongitudeSmall'), $('#newPointLongitudeImg'), 'Format : WXXX XX.XX', '#createNewPointModal small', '#saveNewPointModal');
-	$('#newPointName').on('keyup', function(){checkinputPoint($('#newPointName'), $('#newPointNameSmall'), $('#newPointNameImg'), 'Le nom du point doit avoir au moins 3 caractères', 'Ce nom existe déjà', 'point', '#createNewPointModal small', '#saveNewPointModal');});
-	$('#newPointElev').on('keyup', function(){checkinput($('#newPointElev'), $('#newPointElevSmall'), $('#newPointElevImg'), 'Doit être compris entre 0 et 30 000 pieds', '#createNewPointModal small', '#saveNewPointModal');});
-	$('#newPointLatitude').on('keyup', function(){checkinput($('#newPointLatitude'), $('#newPointLatitudeSmall'), $('#newPointLatitudeImg'), 'Format : NXX XX.XX', '#createNewPointModal small', '#saveNewPointModal');});
-	$('#newPointLongitude').on('keyup', function(){checkinput($('#newPointLongitude'), $('#newPointLongitudeSmall'), $('#newPointLongitudeImg'), 'Format : WXXX XX.XX', '#createNewPointModal small', '#saveNewPointModal');});
+	checkForm('#createNewPointModal');
+	$('#createNewPointModal input').on('keyup', function(){checkForm('#createNewPointModal');});
 	$('#saveNewPointModal').on('click', savePointinDb);
 }
-function resetForm(){
-	$('#pointBegining').val('');
-	document.getElementById('ifrpoints').options.length = 1;
-	$('#pointDatas input').val('');
-}
 (function (){
-	$('#createPointButton').on("click", displayPoint);
-	$('#razPointButton').on("click", function(){$('#pointDatas input').val('');});
+	$('#createPointButton').on("click", function(){createNewLineInTable(Point.createInString($('#pointName').val(), $('#northSouthcoordinate').val(), $('#eastWestcoordinate').val(), $('#pointAlti').val()))});
+	$('#razPointButton').on("click", function(){resetForm('#providedPointForm');});
+	$('#departureSearch').on('keyup', function(){checkForm('#departureSearchFieldset');});
+	$('#arrivalSearch').on('keyup', function(){checkForm('#arrivalSearchFieldset');});
+	$('#pointBegining').on('keyup', function(){checkForm('#pointTypeFieldset');});
 	$('#saveTransit').on("click", displayTransitToSaveInDialog);
 	$('#loadTransit').on("click",loadTransitInDialog);
 	$('#insertAirfields').on("click", insertAirfieldsInTable);
 	$('#calculatePLE').on("click", displayPLEDialog);
 	$('#changeAirfields').on("click", displayAirfieldsSelection);
-	$('#pointBegining').on("keyup",function(){manageResearchInput($('#pointBegining'), 'ifrpoints', 'ifr', '');});
-	$('#departureSearch').on("keyup",function(){manageResearchInput($('#departureSearch'), 'departureAirfieldChoice', 'airfield', $('input[name=searchType]:checked'));});
-	$('#arrivalSearch').on("keyup",function(){manageResearchInput($('#arrivalSearch'), 'arrivalAirfieldChoice', 'airfield', $('input[name=searchType2]:checked'));});
-	$('input[name=searchType]').on("change",function(){if ( $('#departureSearch').val().length >= 2) loadAirfieldsSelect($('input[name=searchType]:checked'), $('#departureSearch').val(), document.getElementById('departureAirfieldChoice'));});
-	$('input[name=searchType2]').on("change",function(){if ( $('#arrivalSearch').val().length >= 2) loadAirfieldsSelect($('input[name=searchType2]:checked'), $('#arrivalSearch').val(), document.getElementById('arrivalAirfieldChoice'));});
+	$('#pointBegining').on("keyup",function(){loadIFRPointsBeginingByInSelect($('#pointBegining').val());});
+	$('#departureSearch').on("keyup",function(){loadAirfieldsSelect('#departureSearchFieldset', 'searchType');});
+	$('#arrivalSearch').on("keyup",function(){loadAirfieldsSelect('#arrivalSearchFieldset', 'searchType2');});
+	$('input[name=searchType]').on("change",function(){loadAirfieldsSelect('#departureSearchFieldset', 'searchType');});
+	$('input[name=searchType2]').on("change",function(){loadAirfieldsSelect('#arrivalSearchFieldset', 'searchType2');});
 	$('#ifrpoints').on("change",function(){DisplayIfrPointInformations($('#ifrpoints').val())});
 	$('#saveNewAirfield').on('click', saveNewAifield);
-	$('#pointType').on('change', resetForm);
-	$('#saveNewPoint').on('click', function(){saveNewPoint('','','','')});
+	$('#pointType').on('change', function(){resetForm('#providedPointForm');});
+	$('#saveNewPoint').on('click', function(){saveNewPointModal('','','','')});
+	$('#pointDatas input').on('keyup', function(){checkForm('#pointDatas');})
 	$('tbody').sortable({
 		axis : "y",
 		cursor : "pointer",

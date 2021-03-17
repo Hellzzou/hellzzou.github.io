@@ -39,4 +39,5 @@ function displayResults(){
 (function(){
 	$('#calculateDatasButton').on("click", displayResults);
 	$('#razDatasButton').on("click", function(){$('#providedDatasForm input').val('');});
+	$('#providedDatasForm input').on('keyup', function(){checkForm('#providedDatasForm')});
 })();

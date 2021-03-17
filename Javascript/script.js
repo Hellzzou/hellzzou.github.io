@@ -4,13 +4,15 @@ function displayTheGoodForm(classAndID){
 		for (let i = 0 ; i < sectionArray.length ; i++){
 			sectionArray[i].className =  ( sectionArray[i].id == classAndID ) ? 'row' : 'd-none row';
 		}
-		if ( classAndID == 'ctl' ) {
-			$('#dropdownMenu').removeClass('disabled');
-			calculateAllDistancesAndCorrectedQfe();
-		}
-		else {
-			if ( classAndID == 'shot') updateShotSection();
-			$('#dropdownMenu').addClass('disabled');
+		switch( classAndID ){
+			case 'ctl' :
+				$('#dropdownMenu').removeClass('disabled');
+				calculateAllDistancesAndCorrectedQfe();
+				break;
+			case 'shot' :
+				updateShotSection();
+				$('#dropdownMenu').addClass('disabled');
+				break;	
 		}
 	}
 }

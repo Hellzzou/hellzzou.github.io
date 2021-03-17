@@ -26,10 +26,10 @@
 												<span class="visually-hidden"></span>
 											</button>
 											<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenu">
-												<button id="saveTransit" class="dropdown-item" type="button">Sauvegarder un transit</button>
 												<button id="loadTransit" class="dropdown-item" type="button">Charger un transit</button>
 												<button id="changeAirfields" class="dropdown-item" type="button">Changer les aéroports</button>
 												<button id="calculatePLE" class="dropdown-item" type="button">Calculer la PLE</button>
+												<button id="saveTransit" class="dropdown-item" type="button">Sauvegarder un transit</button>
 												<button id="saveNewPoint" class="dropdown-item" type="button">Sauvegarder un point</button>
 												<button id="saveNewAirfield" class="dropdown-item" type="button">sauvegarder un terrain</button>
 											</div>
@@ -49,47 +49,47 @@
 		</div>
 		<section id="altimeter" class="row">
 			<form action="#" id="providedDatasForm" name="providedDatasForm" class="col-12 col-lg-6">
-				<fieldset class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+				<fieldset id="altimeterFieldset" class="shadow-lg border border-dark text-dark rounded p-2 m-2">
 					<legend class="text-center mb-4 fw-bold">Données environnementales et tactiques</legend>
-					<div class="form-group row m-1">
-						<label for="qnh" class="col-md-8 col-form-label fw-bold">QNH : </label>
-						<div class="col-md-4">
-							<input class="form-control bg-dark text-center text-light" type="number" id="qnh" min="970" max="1030" data-type="number" data-placeholder="QNH !" autofocus>
+					<div id="qnhFormGroup" class="form-group row m-1">
+						<label for="qnh" class="col-md-7 col-form-label fw-bold">QNH : </label>
+						<div class="col-md-5" data-check="toCheck">
+							<input class="form-control bg-dark text-center text-light is-invalid" type="number" id="qnh" min="970" max="1030" data-remark="entre 970 et 1030" data-type="number" data-placeholder="QNH !" autofocus>
 							<small class="form-text text-warning">entre 970 et 1030</small>
 						</div>
 					</div>
-					<div class="form-group row m-1">
-						<label for="fl" class="col-md-8 col-form-label fw-bold">Niveau de vol : </label>
-						<div class="col-md-4">
-							<input class="form-control bg-dark text-center text-light" type="number" id="fl" step="5" min="0" max="300" data-type="number" data-placeholder="FL !">
+					<div id="flFormGroup" class="form-group row m-1">
+						<label for="fl" class="col-md-7 col-form-label fw-bold">Niveau de vol : </label>
+						<div class="col-md-5" data-check="toCheck">
+							<input class="form-control bg-dark text-center text-light is-invalid" type="number" id="fl" step="5" min="0" max="300" data-remark="entre 0 et 300" data-type="number" data-placeholder="FL !">
 							<small class="form-text text-warning">entre 0 et 300</small>
 						</div>
 					</div>
-					<div class="form-group row m-1">
-						<label for="tv" class="col-md-8 col-form-label fw-bold">Température vraie : ( en °C )</label>
-						<div class="col-md-4">
-							<input class="form-control bg-dark text-light text-center" type="number" id="tv" step="0.1" min="-40" max="50" data-type="number" data-placeholder="TV !">
+					<div id="tvFormGroup" class="form-group row m-1">
+						<label for="tv" class="col-md-7 col-form-label fw-bold">Température vraie : ( en °C )</label>
+						<div class="col-md-5" data-check="toCheck">
+							<input class="form-control bg-dark text-light text-center is-invalid" type="number" id="tv" step="0.1" min="-40" max="50" data-remark="entre -40 et 50" data-type="number" data-placeholder="TV !">
 							<small class="form-text text-warning">entre -40 et 50</small>
 						</div>
 					</div>
-					<div class="form-group row m-1">
-						<label for="altiTerrain" class="col-md-8 col-form-label fw-bold">Altitude terrain : </label>
-						<div class="col-md-4">
-							<input class="form-control bg-dark text-light text-center" type="number" id="altiTerrain" min="0" max="30000" data-type="number" data-placeholder="Alti terrain !">
+					<div id="altiTerrainFormGroup" class="form-group row m-1">
+						<label for="altiTerrain" class="col-md-7 col-form-label fw-bold">Altitude terrain : </label>
+						<div class="col-md-5" data-check="toCheck">
+							<input class="form-control bg-dark text-light text-center is-invalid" type="number" id="altiTerrain" min="0" max="30000" data-remark="entre 0 et 30 000" data-type="number" data-placeholder="Alti terrain !">
 							<small class="form-text text-warning">entre 0 et 30 000</small>
 						</div>
 					</div>
-					<div class="form-group row m-1">
-						<label for="altiTopoMax" class="col-md-8 col-form-label fw-bold">Altitude Topo Max : </label>
-						<div class="col-md-4">
-							<input class="form-control bg-dark text-light text-center" type="number" id="altiTopoMax" min="0" max="30000" data-type="number" data-placeholder="Alti Topo Max !">
+					<div id="altiTopoMaxFormGroup" class="form-group row m-1">
+						<label for="altiTopoMax" class="col-md-7 col-form-label fw-bold">Altitude Topo Max : </label>
+						<div class="col-md-5" data-check="toCheck">
+							<input class="form-control bg-dark text-light text-center is-invalid" type="number" id="altiTopoMax" min="0" max="30000" data-remark="entre 0 et 30 000" data-type="number" data-placeholder="Alti Topo Max !">
 							<small class="form-text text-warning">entre 0 et 30 000</small>
 						</div>
 					</div>
-					<div class="form-group row m-1">
-						<label for="volsa" class="col-md-8 col-form-label fw-bold">Volume système d'armes : </label>
-						<div class="col-md-4">
-							<input class="form-control bg-dark text-light text-center" type="number" id="volsa" step="100" min="0" max="30000" data-type="number" data-placeholder="Volume SA !">
+					<div id="VolsaFormGroup" class="form-group row m-1">
+						<label for="volsa" class="col-md-7 col-form-label fw-bold">Volume système d'armes : </label>
+						<div class="col-md-5" data-check="toCheck">
+							<input class="form-control bg-dark text-light text-center is-invalid" type="number" id="volsa" step="100" min="0" max="30000" data-remark="entre 0 et 30 000" data-type="number" data-placeholder="Volume SA !">
 							<small class="form-text text-warning">entre 0 et 30 000</small>
 						</div>
 					</div>
@@ -106,51 +106,51 @@
 				<fieldset class="shadow-lg border border-dark text-dark rounded p-2 m-2">
 				<legend class="text-center mb-4 fw-bold">Données calculées</legend>
 					<div class="form-group row m-2">
-						<label for="isa" class="col-md-8 col-form-label fw-bold">∆ ISA : ( en °C )</label>
-						<div class="col-md-4">
+						<label for="isa" class="col-md-7 col-form-label fw-bold">∆ ISA : ( en °C )</label>
+						<div class="col-md-5">
 							<input class="form-control bg-dark text-light text-center" type="text" name="isa" id="isa" value="" placeholder="" readonly='readonly'>
 							<small class="form-text text-warning"><span class="text-warning">Atmosphère : </span><span id="atmos" class="text-warning"></span></small>
 						</div>
 					</div>
 					<div class="form-group row m-2">
-						<label for="DeltaTempPieds" class="col-md-8 col-form-label fw-bold">∆ température : ( en ft )</label>
-						<div class="col-md-4">
+						<label for="DeltaTempPieds" class="col-md-7 col-form-label fw-bold">∆ température : ( en ft )</label>
+						<div class="col-md-5">
 							<input class="form-control bg-dark text-light text-center" type="text" name="DeltaTempPieds" id="DeltaTempPieds" value="" placeholder="" readonly='readonly'>
 						</div>
 					</div>
 					<div class="form-group row m-2">
-						<label for="DeltaTempHpa" class="col-md-8 col-form-label fw-bold">∆ température : ( en Hpa )</label>
-						<div class="col-md-4">
+						<label for="DeltaTempHpa" class="col-md-7 col-form-label fw-bold">∆ température : ( en Hpa )</label>
+						<div class="col-md-5">
 							<input class="form-control bg-dark text-light text-center" type="text" name="DeltaTempHpa" id="DeltaTempHpa" value="" placeholder="" readonly='readonly'>
 						</div>
 					</div>
 					<div class="form-group row m-2">
-						<label for="qfe" class="col-md-8 col-form-label fw-bold">QFE : </label>
-						<div class="col-md-4">
+						<label for="qfe" class="col-md-7 col-form-label fw-bold">QFE : </label>
+						<div class="col-md-5">
 							<input class="form-control bg-dark text-light text-center" type="text" name="qfe" id="qfe" value="" placeholder="" readonly='readonly'>
-						</div class="col-md-4">
+						</div>
 					</div>
 					<div class="form-group row m-2">
-						<label for="qfec" class="col-md-8 col-form-label fw-bold">QFE corrigé : </label>
-						<div class="col-md-4">
+						<label for="qfec" class="col-md-7 col-form-label fw-bold">QFE corrigé : </label>
+						<div class="col-md-5">
 							<input class="form-control bg-dark text-light text-center" type="text" name="qfec" id="qfec" value="" placeholder="" readonly='readonly'>
 						</div>
 					</div>
 					<div class="form-group row m-2">
-						<label for="hi" class="col-md-8 col-form-label fw-bold">Hauteur indiquée : ( en ft )</label>
-						<div class="col-md-4">
+						<label for="hi" class="col-md-7 col-form-label fw-bold">Hauteur indiquée : ( en ft )</label>
+						<div class="col-md-5">
 							<input class="form-control bg-dark text-light text-center" type="text" name="hi" id="hi" value="" placeholder="" readonly='readonly'>
 						</div>
 					</div>
 					<div class="form-group row m-2">
-						<label for="hv" class="col-md-8 col-form-label fw-bold">Hauteur vraie : ( en ft )</label>
-						<div class="col-md-4">
+						<label for="hv" class="col-md-7 col-form-label fw-bold">Hauteur vraie : ( en ft )</label>
+						<div class="col-md-5">
 							<input class="form-control bg-dark text-light text-center" type="text" name="hv" id="hv" value="" placeholder="" readonly='readonly'>
 						</div>
 					</div>
 					<div class="form-group row m-2">
-						<label for="flMini" class="col-md-8 col-form-label fw-bold">FL mini : </label>
-						<div class="col-md-4">
+						<label for="flMini" class="col-md-7 col-form-label fw-bold">FL mini : </label>
+						<div class="col-md-5">
 							<input class="form-control bg-dark text-light text-center" type="text" name="flMini" id="flMini" value="" placeholder="" readonly='readonly'>
 						</div>
 					</div>
@@ -160,11 +160,11 @@
 		<section id="ctl" class="row d-none">
 			<form action="#" id="airfields" name="airfields" class="col-12 col-lg-4">
 				<h4 class="text-center text-dark">Aéroports de départ et d'arrivée</h4>
-				<fieldset class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+				<fieldset id="departureSearchFieldset" class="shadow-lg border border-dark text-dark rounded p-2 m-2">
 					<legend class="text-center fw-bold">Aéroport de départ</legend>
-					<div class="justify-content-end row">
-						<label class="col-md-7 col-form-label fw-bold">Rechercher par : </label>
-						<div class="btn-group btn-group-toggle col-md-5" data-toggle="buttons">
+					<div class="justify-content-end row m-2">
+						<label class="col-md-6 col-form-label fw-bold">Rechercher par : </label>
+						<div class="btn-group btn-group-toggle col-md-6" data-toggle="buttons">
 							<label class="btn btn-dark">
 								<input id="option1" class="" type="radio" name="searchType" value="NAME" autocomplete="off" checked>NOM
 							</label>
@@ -173,28 +173,26 @@
 							</label>
 						</div>
 					</div>
-					<br>
-					<div class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="departureSearch">Recherche :</label>
-						<div class="col-md-5">
-							<input class="form-control bg-dark text-light text-center" type="text" name="departureSearch" id="departureSearch">
+					<div id="departureSearchFormGroup" class="form-group row m-2">
+						<label class="col-md-6 col-form-label fw-bold" for="departureSearch">Recherche :</label>
+						<div class="col-md-6" data-check="toCheck">
+							<input class="form-control bg-dark text-light text-center is-invalid" data-type="text" data-min="2" data-remark="minimum 2 caractères" data-max="12000" name="departureSearch" id="departureSearch">
 							<small class="form-text text-warning">minimum 2 caractères</small>
 						</div>
 					</div>
-					<div class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="departureAirfieldChoice">aéroport de départ</label>
-						<div class="col-md-5">
-							<select id="departureAirfieldChoice" class="form-select bg-dark text-light text-center">
-								<option>Choix</option>
+					<div class="form-group row m-2">
+						<label class="col-md-6 col-form-label fw-bold" for="departureAirfieldChoice">aéroport de départ</label>
+						<div class="col-md-6">
+							<select id="departureAirfieldChoice" data-reset="toReset" class="form-select bg-dark text-light text-center">
 							</select>
 						</div>
 					</div>
 				</fieldset>
-				<fieldset class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+				<fieldset id="arrivalSearchFieldset" class="shadow-lg border border-dark text-dark rounded p-2 m-2">
 					<legend class="text-center fw-bold">Aéroport d'arrivée</legend>
-					<div class="justify-content-end row">
-						<label class="col-md-7 col-form-label fw-bold">Rechercher par : </label>
-						<div class="btn-group btn-group-toggle col-md-5" data-toggle="buttons">
+					<div class="justify-content-end row m-2">
+						<label class="col-md-6 col-form-label fw-bold">Rechercher par : </label>
+						<div class="btn-group btn-group-toggle col-md-6" data-toggle="buttons">
 							<label class="btn btn-dark">
 								<input id="option1" type="radio" name="searchType2" value="NAME" autocomplete="off" checked>NOM
 							</label>
@@ -203,19 +201,17 @@
 							</label>
 						</div>
 					</div>
-					<br>
-					<div class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="arrivalSearch">Recherche :</label>
-						<div class="col-md-5">
-							<input class="form-control bg-dark text-light text-center" type="text" name="arrivalSearch" id="arrivalSearch">
+					<div id="arrivalSearchFormGroup" class="form-group row m-2">
+						<label class="col-md-6 col-form-label fw-bold" for="arrivalSearch">Recherche :</label>
+						<div class="col-md-6" data-check="toCheck">
+							<input class="form-control bg-dark text-light text-center is-invalid" data-type="text" data-min="2" data-remark="minimum 2 caractères" data-max="12000" name="arrivalSearch" id="arrivalSearch">
 							<small class="form-text text-warning">minimum 2 caractères</small>
 						</div>
 					</div>
-					<div class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="arrivalAirfieldChoice">aéroport d'arrivée</label>
-						<div class="col-md-5">
-							<select id="arrivalAirfieldChoice" class="form-select bg-dark text-light text-center">
-								<option>Choix</option>
+					<div class="form-group row m-2">
+						<label class="col-md-6 col-form-label fw-bold" for="arrivalAirfieldChoice">aéroport d'arrivée</label>
+						<div class="col-md-6">
+							<select id="arrivalAirfieldChoice" data-reset="toReset" class="form-select bg-dark text-light text-center">
 							</select>
 						</div>
 					</div>
@@ -227,66 +223,66 @@
 			<form action="#" id="providedPointForm" name="providedPointForm" class="col-12 col-lg-4 d-none">
 				<h4 class="text-center text-dark">Entrer un nouveau point</h4>
 				<fieldset id="pointTypeFieldset" class="shadow-lg border border-dark text-dark rounded p-2 m-2">
-					<div class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="pointType">Type de point : </label>
-						<div class="col-md-5">
+					<div class="form-group row m-2">
+						<label class="col-md-6 col-form-label fw-bold" for="pointType">Type de point : </label>
+						<div class="col-md-6">
 							<select id="pointType" class="form-select bg-dark text-light text-center">
 								<option>point de CTL</option>
 								<option>point IFR</option>
 							</select>
 						</div>
 					</div>
-					<br>
-					<div id="pointBeginingPara" class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="pointBegining">Recherche : </label>
-						<div class="col-md-5">
-							<input id="pointBegining" class="form-control bg-dark text-light text-center" type="text" name="pointBegining">
+					<div id="pointBeginingPara" class="form-group row m-2">
+						<label class="col-md-6 col-form-label fw-bold" for="pointBegining">Recherche : </label>
+						<div class="col-md-6" data-check="toCheck">
+							<input id="pointBegining" class="form-control bg-dark text-light text-center is-invalid" data-remark="minimum 2 caractères" data-type="text" data-min="2" data-max="12000" name="pointBegining">
+							<small id="pointBeginingSmall" class="form-text text-warning">minimum 2 caractères</small>
 						</div>
 					</div>
-					<br>
-					<div id="ifrpointsPara" class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="ifrpoints">Choisissez votre point :</label>
-						<div class="col-md-5">
-							<select id="ifrpoints" class="form-select bg-dark text-light text-center">
-								<option>Choix</option>
+					<div id="ifrpointsPara" class="form-group row m-2">
+						<label class="col-md-6 col-form-label fw-bold" for="ifrpoints">Choisissez :</label>
+						<div class="col-md-6">
+							<select id="ifrpoints" data-reset="toReset" class="form-select bg-dark text-light text-center">
 							</select>
 						</div>
 					</div>
 				</fieldset>
-				<fieldset id="pointDatas" class="shadow-lg border border-dark text-dark rounded p-2 m-2">
-					<div class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="pointName">Nom du point : </label>
-						<div class="col-md-5">
-							<input class="form-control bg-dark text-light text-center" type="text" name="pointName" id="pointName" data-type="text" data-placeholder="">
-							<small class="form-text text-warning">moins de 20 caractères</small>
+				<div id="pointDatas">
+					<fieldset class="shadow-lg border border-dark text-dark rounded p-2 m-2">
+						<div id="pointNameFormGroup" class="form-group row m-2">
+							<label class="col-md-6 col-form-label fw-bold" for="pointName">Nom du point : </label>
+							<div class="col-md-6" data-check="toCheck">
+								<input class="form-control bg-dark text-light text-center is-invalid" tabindex="1" type="text" name="pointName" id="pointName" data-remark="Entre 2 et 10 caractères" data-type="text" data-min="2" data-max="10" data-placeholder="" aria-describedby="pointNameImg">
+								<small id="pointNameSmall" class="form-text text-warning">Entre 3 et 10 caractères</small>
+							</div>
 						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="pointAlti">Altitude du point : </label>
-						<div class="col-md-5">
-							<input class="form-control bg-dark text-light text-center" type="number" name="pointAlti" id="pointAlti" min="0" max="30000" data-type="number" data-placeholder="">
-							<small class="form-text text-warning">en pieds</small>
+						<div id="pointAltiFormGroup" class="form-group row m-2">
+							<label class="col-md-6 col-form-label fw-bold" for="pointAlti">Altitude du point : </label>
+							<div class="col-md-6" data-check="toCheck">
+								<input class="form-control bg-dark text-light text-center is-invalid" tabindex="2" type="number" name="pointAlti" id="pointAlti" min="0" max="30000" data-remark="entre 0 et 30 000" data-type="number" data-placeholder="">
+								<small id="pointAltiSmall" class="form-text text-warning">entre 0 et 30 000</small>
+							</div>
 						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="northSouthcoordinate">Coordonnée N/S : </label>
-						<div class="col-md-5">
-							<input class="form-control bg-dark text-light text-center" type="text" name="northSouthcoordinate" id="northSouthcoordinate" data-type="latitude" data-placeholder="">
-							<small class="form-text text-warning">format : Nxx xx.xx </small>
+						<div id="northSouthcoordinateFormGroup" class="form-group row m-2">
+							<label class="col-md-6 col-form-label fw-bold" for="northSouthcoordinate">Coordonnée N/S : </label>
+							<div class="col-md-6" data-check="toCheck">
+								<input class="form-control bg-dark text-light text-center is-invalid" tabindex="3" type="text" name="northSouthcoordinate" id="northSouthcoordinate" data-remark="format : NXX XX.XX" data-type="latitude" data-placeholder="">
+								<small id="northSouthcoordinateSmall" class="form-text text-warning">format : NXX XX.XX</small>
+							</div>
 						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-md-7 col-form-label fw-bold" for="eastWestcoordinate">Coordonnée E/W : </label>
-						<div class="col-md-5">
-							<input class="form-control bg-dark text-light text-center" type="text" name="eastWestcoordinate" id="eastWestcoordinate" data-type="longitude" data-placeholder="">
-							<small class="form-text text-warning">format : Wxxx xx.xx </small>
+						<div id="eastWestcoordinateFormGroup" class="form-group row m-2">
+							<label class="col-md-6 col-form-label fw-bold" for="eastWestcoordinate">Coordonnée E/W : </label>
+							<div class="col-md-6" data-check="toCheck">
+								<input class="form-control bg-dark text-light text-center is-invalid" tabindex="4" type="text" name="eastWestcoordinate" id="eastWestcoordinate" data-remark="Format : WXXX XX.XX" data-type="longitude" data-placeholder="">
+								<small id="eastWestcoordinateSmall" class="form-text text-warning">Format : WXXX XX.XX</small>
+							</div>
 						</div>
+					</fieldset>
+					<div class="form-group row justify-content-center">
+						<button id="createPointButton" class="shadow-lg btn btn-primary col-md-4" type="button" data-activate="toActivate" disabled="disabled">Créer</button>
+						<div class="col-md-2"></div>
+						<button id="razPointButton" class="shadow-lg btn btn-danger col-md-4" type="button">Effacer</button>
 					</div>
-				</fieldset>
-				<div class="form-group row justify-content-center">
-					<button id="createPointButton" class="shadow-lg btn btn-primary col-md-4" type="button">Créer</button>
-					<div class="col-md-2"></div>
-					<button id="razPointButton" class="shadow-lg btn btn-danger col-md-4" type="button">Effacer</button>
 				</div>
 			</form>
 			<div class="col-12 col-lg-8">
@@ -338,52 +334,55 @@
 			<form action="#" name="mgrsToLatLongForm" id="mgrsToLatLongForm" class="mgrsToLatLongForm col-12 col-lg-6">
 				<fieldset id="mgrsToLatLongFieldset" class="shadow-lg mgrsToLatLongFieldset border border-dark text-dark rounded p-2 m-2">
 					<legend class="text-center fw-bold">Convertir MGRS en Lat Long</legend>
-					<div class="form-group row m-2">
-						<label class="col-md-8 col-form-label fw-bold" for="mgrsToConvert">MGRS à convertir : ( 31T FJ 64235 52345 )</label>
-						<div class="col-md-4">
-							<input type="text" name="mgrsToConvert"  class="form-control bg-dark text-light text-center" id="mgrsToConvert" data-type="MGRS" data-placeholder="Mauvais format !">
+					<div id="mgrsToConvertFormGroup" class="form-group row m-2">
+						<label class="col-md-7 col-form-label fw-bold" for="mgrsToConvert">MGRS à convertir : </label>
+						<div class="col-md-5" data-check="toCheck">
+							<input type="text" name="mgrsToConvert"  class="form-control bg-dark text-light text-center is-invalid" id="mgrsToConvert" data-remark="Format : 31T FJ 64235 52345" data-type="MGRS" data-placeholder="Mauvais format !">
+							<small class="form-text text-warning">Format : 31T FJ 64235 52345</small>
 						</div>
 					</div>
 					<div class="form-group row justify-content-center m-2">
-						<button id="convertMgrsToLatLong" class="shadow-lg btn btn-primary col-md-4" type="button">Convertir</button>
+						<button id="convertMgrsToLatLong" class="shadow-lg btn btn-primary col-md-4" data-activate="toActivate" type="button" disabled="disabled">Convertir</button>
 						<div class="col-md-1"></div>
 						<button id="razMgrsToLatLong" class="shadow-lg btn btn-danger col-md-4" type="button">Effacer</button>
 					</div>
 					<div class="form-group row m-2">
-						<label class="col-md-8 col-form-label fw-bold" for="LatConverted">Latitude convertie : </label>
-						<div class="col-md-4">
+						<label class="col-md-7 col-form-label fw-bold" for="LatConverted">Latitude convertie : </label>
+						<div class="col-md-5">
 							<input type="text" name="LatConverted"  class="form-control bg-dark text-light text-center" id="LatConverted" placeholder="" readonly='readonly'>
 						</div>
 					</div>
 					<div class="form-group row m-2">
-						<label class="col-md-8 col-form-label fw-bold" for="LongConverted">Longitude convertie : </label>
-						<div class="col-md-4">
+						<label class="col-md-7 col-form-label fw-bold" for="LongConverted">Longitude convertie : </label>
+						<div class="col-md-5">
 							<input type="text" name="LongConverted"  class="form-control bg-dark text-light text-center" id="LongConverted" placeholder="" readonly='readonly'>
 						</div>
 					</div>
 				</fieldset>
 				<fieldset id="LatLongToMgrsfieldset" class="shadow-lg LatLongToMgrsfieldset border border-dark text-dark rounded p-2 m-2">
 					<legend class="text-center fw-bold">Convertir Lat Long en MGRS</legend>
-						<div class="form-group row m-2">
-							<label class="col-md-8 col-form-label fw-bold" for="LatToConvert">Latitude à convertir : ( Nxx xx.xx )</label>
-							<div class="col-md-4">
-								<input type="text" name="LatToConvert"  class="form-control bg-dark text-light text-center" id="LatToConvert" data-type="latitude" data-placeholder="Mauvais format !">
+						<div id="LatToConvertFormGroup" class="form-group row m-2">
+							<label class="col-md-7 col-form-label fw-bold" for="LatToConvert">Latitude à convertir : ( Nxx xx.xx )</label>
+							<div class="col-md-5" data-check="toCheck">
+								<input type="text" name="LatToConvert"  class="form-control bg-dark text-light text-center is-invalid" id="LatToConvert" data-remark="Format : NXX XX.XX" data-type="latitude" data-placeholder="Mauvais format !">
+								<small class="form-text text-warning">Format : NXX XX.XX</small>
 							</div>
 						</div>
-						<div class="form-group row m-2">
-							<label class="col-md-8 col-form-label fw-bold" for="LongToConvert">Longitude à convertir : ( Wxxx xx.xx )</label>
-							<div class="col-md-4">
-								<input type="text" name="LongToConvert"  class="form-control bg-dark text-light text-center" id="LongToConvert" data-type="longitude" data-placeholder="Mauvais format !">
+						<div id="LongToConvertFormGroup" class="form-group row m-2">
+							<label class="col-md-7 col-form-label fw-bold" for="LongToConvert">Longitude à convertir : ( Wxxx xx.xx )</label>
+							<div class="col-md-5" data-check="toCheck">
+								<input type="text" name="LongToConvert"  class="form-control bg-dark text-light text-center is-invalid" id="LongToConvert" data-remark="Format : WXXX XX.XX" data-type="longitude" data-placeholder="Mauvais format !">
+								<small class="form-text text-warning">Format : WXXX XX.XX</small>
 							</div>
 						</div>
 						<div class="form-group row justify-content-center m-2">
-							<button id="convertLatLongToMgrs" class="shadow-lg btn btn-primary col-md-4" type="button">Convertir</button>
+							<button id="convertLatLongToMgrs" class="shadow-lg btn btn-primary col-md-4" data-activate="toActivate" type="button" disabled="disabled">Convertir</button>
 							<div class="col-md-1"></div>
 							<button id="razLatLongToMgrs" class="shadow-lg btn btn-danger col-md-4" type="button">Effacer</button>
 						</div>
 						<div class="form-group row m-2">
-							<label class="col-md-8 col-form-label fw-bold" for="mgrsConverted">Coordonées MGRS convertie : </label>
-							<div class="col-md-4">
+							<label class="col-md-7 col-form-label fw-bold" for="mgrsConverted">Coordonées MGRS convertie : </label>
+							<div class="col-md-5">
 								<input type="text" name="mgrsConverted"  class="form-control bg-dark text-light text-center" id="mgrsConverted" placeholder="" readonly='readonly'>
 							</div>
 						</div>
@@ -392,26 +391,26 @@
 			<form action="#" name="distanceConverter" id="distanceConverter" class="col-12 col-lg-6">
 				<fieldset id="distanecConverterFieldset" class="shadow-lg border border-dark text-dark rounded p-2 m-2">
 					<legend class="text-center fw-bold">Convertisseur de distances</legend>
-					<div class="form-group row p-3 m-3">
-						<label class="col-md-8 col-form-label fw-bold" for="meters">Valeur en mètres : </label>
-						<div class="col-md-4">
+					<div class="form-group row m-2">
+						<label class="col-md-7 col-form-label fw-bold" for="meters">Valeur en mètres : </label>
+						<div class="col-md-5">
 							<input type="number" name="meters" class="form-control bg-dark text-light text-center" id="meters" min="0" max="1000000000000" data-type="number" data-placeholder="Nombre positif !">
 						</div>
 					</div>
-					<div class="form-group row p-3 m-3">
-						<label class="col-md-8 col-form-label fw-bold" for="feets">Valeur en pieds : </label>
-						<div class="col-md-4">
+					<div class="form-group row m-2">
+						<label class="col-md-7 col-form-label fw-bold" for="feets">Valeur en pieds : </label>
+						<div class="col-md-5">
 							<input type="number" name="feets" class="form-control bg-dark text-light text-center" id="feets" min="0" max="1000000000000" data-type="number" data-placeholder="Nombre positif !">
 						</div>
 					</div>
-					<div class="form-group row p-3 m-3">
-						<label class="col-md-8 col-form-label fw-bold" for="nautics">Valeur en nautiques : </label>
-						<div class="col-md-4">
+					<div class="form-group row m-2">
+						<label class="col-md-7 col-form-label fw-bold" for="nautics">Valeur en nautiques : </label>
+						<div class="col-md-5">
 							<input type="number" name="nautics" class="form-control bg-dark text-light text-center" id="nautics" min="0" max="1000000000000" data-type="number" data-placeholder="Nombre positif !">
 						</div>
 					</div>
-					<div class="justify-content-center row">
-						<button id="razDistanceConverter" class="shadow-lg btn btn-primary col-md-4" type="button">Effacer</button>
+					<div class="justify-content-center row m-2">
+						<button id="razDistanceConverter" class="shadow-lg btn btn-danger col-md-4" type="button">Effacer</button>
 					</div>
 				</fieldset>
 			</form>
@@ -523,20 +522,15 @@
 					<div class="modal-body">
 						<div class="form-group row">
 							<label class="col-md-5 col-form-label fw-bold" for="savedTransitName">Nom du transit : </label>
-							<div class="col-md-7">
-								<div class="input-group">
-									<input class="form-control bg-dark rounded text-light text-center" tabindex="1" type="text" name="savedTransitName" id="savedTransitName" value="" aria-describedby="newTransitImg">
-									<div class="input-group-text bg-dark">
-										<input id="newTransitImg" class="form-check-input mt-0" type="checkbox" value="">
-									</div>
-								</div>
+							<div class="col-md-7" data-check="toCheck">
+								<input class="form-control bg-dark rounded text-light text-center" data-remark="au moins 5 caractères" data-url="http://localhost:3000/api/compareTransit" data-min="5" data-max="1200" tabindex="1" data-type="text" name="savedTransitName" id="savedTransitName" value="" aria-describedby="newTransitImg">
 								<small id="newTransitSmall" class="form-text text-warning"></small>
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
 					<button type="button" class="shadow-lg btn btn-danger" data-bs-dismiss="modal" aria-label="close">Annuler</button>
-					<button id="saveTransitModalButton" type="button" class="shadow-lg btn btn-primary">Sauvegarder</button>
+					<button id="saveTransitModalButton" data-activate="toActivate" type="button" class="shadow-lg btn btn-primary">Sauvegarder</button>
 					</div>
 				</div>
 			</div>
@@ -600,62 +594,37 @@
 					<div class="modal-body">
 						<div class="form-group row m-2">
 							<label class="col-md-5 col-form-label fw-bold" for="newAirfieldICAO">Code OACI : </label>
-							<div class="col-md-7">
-								<div class="input-group">
-									<input class="form-control bg-dark rounded text-light text-center" tabindex="1" type="text" name="newAirfieldICAO" id="newAirfieldICAO" value="" aria-describedby="newAirfieldICAOImg">
-									<div class="input-group-text bg-dark">
-										<input id="newAirfieldICAOImg" class="form-check-input mt-0" type="checkbox" value="">
-									</div>
-								</div>
+							<div class="col-md-7" data-check="toCheck">
+								<input class="form-control bg-dark rounded text-light text-center" tabindex="1" data-type="text" data-min="4" data-max="4" data-remark="Le code OACI doit avoir 4 caractères" data-bddtype="ICAO" data-url="http://localhost:3000/api/compareAirfields" name="newAirfieldICAO" id="newAirfieldICAO" value="" aria-describedby="newAirfieldICAOImg">
 								<small id="newAirfieldICAOSmall" class="form-text text-warning">Le code OACI doit avoir 4 caractères</small>
 							</div>
 						</div>
 						<div class="form-group row m-2">
 							<label class="col-md-5 col-form-label fw-bold" for="newAifieldName">Nom : </label>
-							<div class="col-md-7">
-								<div class="input-group">
-									<input class="form-control bg-dark rounded text-light text-center" tabindex="2" type="text" name="newAifieldName" id="newAifieldName" value="" aria-describedby="newAifieldNameImg">
-									<div class="input-group-text bg-dark">
-										<input id="newAifieldNameImg" class="form-check-input mt-0" type="checkbox" value="">
-									</div>
-								</div>
+							<div class="col-md-7" data-check="toCheck">
+								<input class="form-control bg-dark rounded text-light text-center" tabindex="2" data-type="text" data-min="3" data-max="1200" data-remark="Le nom du terrain doit avoir au moins 3 caractères" data-bddtype="NAME" data-url="http://localhost:3000/api/compareAirfields" name="newAifieldName" id="newAifieldName" value="" aria-describedby="newAifieldNameImg">
 								<small id="newAifieldNameSmall" class="form-text text-warning">Le nom du terrain doit avoir au moins 3 caractères</small>
 							</div>
 						</div>
 						<div class="form-group row m-2">
 							<label class="col-md-5 col-form-label fw-bold" for="newAifieldLatitude">Latitude : </label>
-							<div class="col-md-7">
-								<div class="input-group">
-									<input class="form-control bg-dark rounded text-light text-center" tabindex="3" type="text" name="newAifieldLatitude" id="newAifieldLatitude" value="" data-type="latitude" aria-describedby="newAifieldLatitudeImg">
-									<div class="input-group-text bg-dark">
-										<input id="newAifieldLatitudeImg" class="form-check-input mt-0" type="checkbox" value="">
-									</div>
-								</div>
+							<div class="col-md-7" data-check="toCheck">
+								<input class="form-control bg-dark rounded text-light text-center" tabindex="3" type="text" name="newAifieldLatitude" id="newAifieldLatitude" value="" data-type="latitude" data-remark="Format : NXX XX.XX" aria-describedby="newAifieldLatitudeImg">
 								<small id="newAifieldLatitudeSmall" class="form-text text-warning">Format : NXX XX.XX</small>
 							</div>
 						</div>
 						<div class="form-group row m-2">
 							<label class="col-md-5 col-form-label fw-bold" for="newAifieldLongitude">Longitude : </label>
-							<div class="col-md-7">
-								<div class="input-group">
-									<input class="form-control bg-dark rounded text-light text-center" tabindex="4" type="text" name="newAifieldLongitude" id="newAifieldLongitude" value="" data-type="longitude" aria-describedby="newAifieldLongitudeImg">
-									<div class="input-group-text bg-dark">
-										<input id="newAifieldLongitudeImg" class="form-check-input mt-0" type="checkbox" value="">
-									</div>
-								</div>
+							<div class="col-md-7" data-check="toCheck">
+									<input class="form-control bg-dark rounded text-light text-center" tabindex="4" type="text" name="newAifieldLongitude" id="newAifieldLongitude" value="" data-type="longitude" data-remark="Format : WXXX XX.XX" aria-describedby="newAifieldLongitudeImg">
 								<small id="newAifieldLongitudeSmall" class="form-text text-warning">Format : WXXX XX.XX</small>
 							</div>
 						</div>
 						<div class="form-group row m-2">
 							<label class="col-md-5 col-form-label fw-bold" for="newAifieldElevation">Hauteur : </label>
-							<div class="col-md-7">
-								<div class="input-group">
-									<input class="form-control bg-dark rounded text-light text-center" tabindex="5" type="text" name="newAifieldElevation" id="newAifieldElevation" value="" data-type="number" min="0" max="30000" aria-describedby="newAifieldElevationImg">
-									<div class="input-group-text bg-dark">
-										<input id="newAifieldElevationImg" class="form-check-input mt-0" type="checkbox" value="">
-									</div>
-								</div>
-								<small id="newAifieldElevationSmall" class="form-text text-warning">Doit être compris entre 0 et 30 000 pieds</small>
+							<div class="col-md-7" data-check="toCheck">
+								<input class="form-control bg-dark rounded text-light text-center" tabindex="5" type="text" name="newAifieldElevation" id="newAifieldElevation" value="" data-remark="entre 0 et 30 000" data-type="number" min="0" max="30000" aria-describedby="newAifieldElevationImg">
+								<small id="newAifieldElevationSmall" class="form-text text-warning">entre 0 et 30 000</small>
 							</div>
 						</div>
 						<div class="form-group row m-2">
@@ -671,7 +640,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="shadow-lg btn btn-danger" data-bs-dismiss="modal" aria-label="close">Annuler</button>
-						<button id="saveNewAirfieldModal" type="button" class="shadow-lg btn btn-primary" disabled="disabled">Sauvegarder</button>
+						<button id="saveNewAirfieldModal" data-activate="toActivate" type="button" class="shadow-lg btn btn-primary" disabled="disabled">Sauvegarder</button>
 					</div>
 				</div>
 			</div>
@@ -686,56 +655,36 @@
 					<div class="modal-body">
 						<div class="form-group row m-2">
 							<label class="col-md-5 col-form-label fw-bold" for="newPointName">Nom : </label>
-							<div class="col-md-7">
-								<div class="input-group">
-									<input class="form-control bg-dark rounded text-light text-center" tabindex="1" type="text" name="newPointName" id="newPointName" value="" aria-describedby="newPointNameImg" data-type="text" autofocus>
-									<div class="input-group-text bg-dark">
-										<input id="newPointNameImg" class="form-check-input mt-0" type="checkbox" value="">
-									</div>
-								</div>
+							<div class="col-md-7" data-check="toCheck">
+								<input class="form-control bg-dark rounded text-light text-center" tabindex="1" type="text" name="newPointName" data-url="http://localhost:3000/api/comparePoint" data-remark="Le nom du point doit avoir au moins 3 caractères" id="newPointName" value="" aria-describedby="newPointNameImg" data-type="text" data-min="3" data-max="1200">
 								<small id="newPointNameSmall" class="form-text text-warning">Le nom du point doit avoir au moins 3 caractères</small>
 							</div>
 						</div>
 						<div class="form-group row m-2">
 							<label class="col-md-5 col-form-label fw-bold" for="newPointElev">Hauteur : </label>
-							<div class="col-md-7">
-								<div class="input-group">
-									<input class="form-control bg-dark rounded text-light text-center" tabindex="2" type="text" name="newPointElev" id="newPointElev" value="" aria-describedby="newPointElevImg" data-type="number" min="0" max="30000">
-									<div class="input-group-text bg-dark">
-										<input id="newPointElevImg" class="form-check-input mt-0" type="checkbox" value="">
-									</div>
-								</div>
-								<small id="newPointElevSmall" class="form-text text-warning">Doit être compris entre 0 et 30 000 pieds</small>
+							<div class="col-md-7" data-check="toCheck">
+								<input class="form-control bg-dark rounded text-light text-center" tabindex="2" type="number" name="newPointElev" id="newPointElev" value="" aria-describedby="newPointElevImg" data-remark="entre 0 et 30 000" data-type="number" min="0" max="30000">
+								<small id="newPointElevSmall" class="form-text text-warning">entre 0 et 30 000</small>
 							</div>
 						</div>
 						<div class="form-group row m-2">
 							<label class="col-md-5 col-form-label fw-bold" for="newPointLatitude">Latitude : </label>
-							<div class="col-md-7">
-								<div class="input-group">
-									<input class="form-control bg-dark rounded text-light text-center" tabindex="3" type="text" name="newPointLatitude" id="newPointLatitude" value="" data-type="latitude" aria-describedby="newPointLatitudeImg">
-									<div class="input-group-text bg-dark">
-										<input id="newPointLatitudeImg" class="form-check-input mt-0" type="checkbox" value="">
-									</div>
-								</div>
+							<div class="col-md-7" data-check="toCheck">
+								<input class="form-control bg-dark rounded text-light text-center" tabindex="3" type="text" name="newPointLatitude" id="newPointLatitude" value="" data-remark="Format : NXX XX.XX" data-type="latitude" aria-describedby="newPointLatitudeImg">
 								<small id="newPointLatitudeSmall" class="form-text text-warning">Format : NXX XX.XX</small>
 							</div>
 						</div>
 						<div class="form-group row m-2">
 							<label class="col-md-5 col-form-label fw-bold" for="newPointLongitude">Longitude : </label>
-							<div class="col-md-7">
-								<div class="input-group">
-									<input class="form-control bg-dark rounded text-light text-center" tabindex="4" type="text" name="newPointLongitude" id="newPointLongitude" value="" data-type="longitude" aria-describedby="newPointLongitudeImg">
-									<div class="input-group-text bg-dark">
-										<input id="newPointLongitudeImg" class="form-check-input mt-0" type="checkbox" value="">
-									</div>
-								</div>
+							<div class="col-md-7" data-check="toCheck">
+								<input class="form-control bg-dark rounded text-light text-center" tabindex="4" type="text" name="newPointLongitude" id="newPointLongitude" value="" data-remark="Format : WXXX XX.XX" data-type="longitude" aria-describedby="newPointLongitudeImg">
 								<small id="newPointLongitudeSmall" class="form-text text-warning">Format : WXXX XX.XX</small>
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="shadow-lg btn btn-danger" data-bs-dismiss="modal" aria-label="close">Annuler</button>
-						<button id="saveNewPointModal" type="button" class="shadow-lg btn btn-primary" disabled="disabled">Sauvegarder</button>
+						<button id="saveNewPointModal" data-activate="toActivate" type="button" class="shadow-lg btn btn-primary" disabled="disabled">Sauvegarder</button>
 					</div>
 				</div>
 			</div>
